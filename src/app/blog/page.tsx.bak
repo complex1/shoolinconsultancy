@@ -1,0 +1,124 @@
+import Link from 'next/link';
+
+const blogPosts = [
+  {
+    id: 1,
+    title: 'The Future of Business Consulting in a Digital World',
+    excerpt: 'Explore how digital transformation is reshaping the landscape of business consulting and what it means for organizations seeking strategic guidance.',
+    date: 'May 15, 2023',
+    author: 'Jane Doe',
+    category: 'Business Strategy'
+  },
+  {
+    id: 2,
+    title: '5 Financial Planning Strategies Every Business Should Consider',
+    excerpt: 'Discover essential financial planning approaches that can help businesses of all sizes navigate economic uncertainty and build resilience.',
+    date: 'April 28, 2023',
+    author: 'John Smith',
+    category: 'Financial Advisory'
+  },
+  {
+    id: 3,
+    title: 'Building a Culture of Innovation: Lessons from Industry Leaders',
+    excerpt: 'Learn how top organizations foster innovation within their teams and how you can implement similar practices in your business.',
+    date: 'April 10, 2023',
+    author: 'Emily Chen',
+    category: 'Organizational Development'
+  },
+  {
+    id: 4,
+    title: 'The Role of Data Analytics in Modern Strategic Planning',
+    excerpt: 'Understand how data-driven decision making is revolutionizing strategic planning processes and creating competitive advantages.',
+    date: 'March 22, 2023',
+    author: 'Michael Johnson',
+    category: 'Strategic Planning'
+  },
+  {
+    id: 5,
+    title: 'Navigating Digital Transformation: Common Challenges and Solutions',
+    excerpt: 'Explore the obstacles organizations face during digital transformation journeys and practical approaches to overcome them.',
+    date: 'March 5, 2023',
+    author: 'Sarah Williams',
+    category: 'Digital Transformation'
+  },
+  {
+    id: 6,
+    title: 'Sustainable Business Practices: A Competitive Necessity',
+    excerpt: 'Discover why sustainability is becoming a strategic imperative and how businesses can integrate sustainable practices into their operations.',
+    date: 'February 18, 2023',
+    author: 'David Kim',
+    category: 'Sustainability'
+  },
+];
+
+export default function Blog() {
+  return (
+    <div className="container mx-auto py-12">
+      <div className="max-w-4xl mx-auto mb-16 text-center">
+        <h1 className="text-4xl font-bold text-blue-800 mb-4">Our Blog</h1>
+        <p className="text-gray-600 text-lg">
+          Insights, trends, and expert perspectives on business consulting and strategy
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {blogPosts.map((post) => (
+          <div key={post.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div className="h-40 bg-blue-100"></div>
+            <div className="p-6">
+              <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
+                <span>{post.category}</span>
+                <span>{post.date}</span>
+              </div>
+              <h2 className="text-xl font-bold mb-2 hover:text-blue-800 transition-colors">
+                <Link href={`/blog/${post.id}`}>
+                  {post.title}
+                </Link>
+              </h2>
+              <p className="text-gray-600 mb-4">{post.excerpt}</p>
+              <div className="flex items-center">
+                <div className="w-8 h-8 rounded-full bg-gray-200 mr-2"></div>
+                <span className="text-sm text-gray-500">{post.author}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-12 flex justify-center">
+        <nav className="inline-flex">
+          <a
+            href="#"
+            className="px-3 py-2 border border-gray-300 rounded-l-md bg-white text-gray-700 hover:bg-gray-50"
+          >
+            Previous
+          </a>
+          <a
+            href="#"
+            className="px-3 py-2 border border-gray-300 bg-blue-800 text-white hover:bg-blue-700"
+          >
+            1
+          </a>
+          <a
+            href="#"
+            className="px-3 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          >
+            2
+          </a>
+          <a
+            href="#"
+            className="px-3 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          >
+            3
+          </a>
+          <a
+            href="#"
+            className="px-3 py-2 border border-gray-300 rounded-r-md bg-white text-gray-700 hover:bg-gray-50"
+          >
+            Next
+          </a>
+        </nav>
+      </div>
+    </div>
+  );
+}
