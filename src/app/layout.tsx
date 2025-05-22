@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import { SeoHead } from "./components/SeoHead";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,6 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <SeoHead page="/" />
+      </head>
       <body
         className={`${inter.variable} ${poppins.variable} antialiased min-h-screen flex flex-col`}
       >

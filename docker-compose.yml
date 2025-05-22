@@ -9,6 +9,10 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/shoolin.db
+    volumes:
+      - ./prisma/shoolin.db:/app/data/shoolin.db
+      - ./public/uploads/media:/app/public/uploads/media
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
