@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import AttorneyCard from './AttorneyCard';
 
 interface Attorney {
+  id?: number;
   name: string;
   title: string;
   specialization: string;
@@ -13,7 +15,7 @@ interface Attorney {
 interface AttorneysSectionProps {
   title?: string;
   description?: string;
-  attorneys: Attorney[];
+  attorneys?: Attorney[];
   className?: string;
   showContact?: boolean;
   showViewMore?: boolean;
@@ -49,7 +51,7 @@ const DEFAULT_ATTORNEYS: Attorney[] = [
 const AttorneysSection: React.FC<AttorneysSectionProps> = ({ 
   title = "Meet Our Expert Attorneys", 
   description = "Our team of highly qualified attorneys brings decades of combined experience across multiple practice areas to provide exceptional legal counsel.",
-  attorneys = DEFAULT_ATTORNEYS,
+  attorneys: initialAttorneys,
   className = "py-16 bg-white",
   showContact = true,
   showViewMore = true,
@@ -58,6 +60,36 @@ const AttorneysSection: React.FC<AttorneysSectionProps> = ({
   contactLink = "/contact",
   viewMoreLink = "/team"
 }) => {
+  const [attorneys, setAttorneys] = useState<Attorney[]>(initialAttorneys || []);
+  const [isLoading, setIsLoading] = useState<boolean>(!initialAttorneys);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!initialAttorneys) {
+      const fetchTeamMembers = async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch('/api/team');
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch team data');
+          }
+          
+          const data = await response.json();
+          setAttorneys(data);
+        } catch (err) {
+          console.error('Error fetching team members:', err);
+          setError('Failed to load team members');
+          setAttorneys(DEFAULT_ATTORNEYS);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchTeamMembers();
+    }
+  }, [initialAttorneys]);
+
   return (
     <section className={className}>
       <div className="container mx-auto">
@@ -69,18 +101,26 @@ const AttorneysSection: React.FC<AttorneysSectionProps> = ({
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {attorneys.map((attorney, index) => (
-              <AttorneyCard
-                key={attorney.name}
-                name={attorney.name}
-                title={attorney.title}
-                specialization={attorney.specialization}
-                image={attorney.image}
-                animationDelay={`${index * 150}ms`}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-800"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center text-red-500 py-8">{error}</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {attorneys.map((attorney, index) => (
+                <AttorneyCard
+                  key={attorney.id || attorney.name + index}
+                  name={attorney.name}
+                  title={attorney.title}
+                  specialization={attorney.specialization}
+                  image={attorney.image}
+                  animationDelay={`${index * 150}ms`}
+                />
+              ))}
+            </div>
+          )}
           
           <div className="mt-12 text-center space-x-4">
             {showContact && (
