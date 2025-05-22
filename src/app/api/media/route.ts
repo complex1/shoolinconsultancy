@@ -5,7 +5,7 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 // Function to get a list of all media files
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const media = await prisma.media.findMany({
       orderBy: {
