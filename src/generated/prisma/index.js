@@ -240,7 +240,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/shubhammaurya/Desktop/Workspace/website/src/generated/prisma",
+      "value": "/Users/shubhammaurya/Desktop/Workspace/freelance/shoolinconsultancy/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -254,7 +254,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/shubhammaurya/Desktop/Workspace/website/prisma/schema.prisma",
+    "sourceFilePath": "/Users/shubhammaurya/Desktop/Workspace/freelance/shoolinconsultancy/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -268,7 +268,6 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
