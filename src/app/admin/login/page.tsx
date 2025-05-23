@@ -129,12 +129,6 @@ export default function AdminLogin() {
               )}
             </button>
           </div>
-          
-          <div className="text-sm text-center">
-            <p className="text-gray-600">
-              Default credentials: username: <span className="font-medium">admin</span> / password: <span className="font-medium">admin123</span>
-            </p>
-          </div>
         </form>
       </div>
     </div>
