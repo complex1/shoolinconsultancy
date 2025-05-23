@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
+    "postbuild": "cp -r node_modules/.prisma/client .next/standalone/.prisma/ && cp node_modules/.prisma/client/libquery_engine-* .next/standalone/.prisma/client/",
     "start": "next start",
     "lint": "next lint"
   },
