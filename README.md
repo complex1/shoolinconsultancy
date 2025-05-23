@@ -553,6 +553,40 @@ rm -rf .next
 npm run build
 ```
 
+#### Prisma Client Initialization Errors
+
+**Problem**: Errors like "PrismaClientInitializationError" or "Query engine binary for current platform could not be found"
+**Solution**: These errors often occur during deployment when the Prisma Client isn't properly generated or when the binary isn't available:
+
+```bash
+# Ensure the Prisma client is correctly generated first
+npx prisma generate
+
+# For Vercel deployments, add the following to build script in package.json:
+# "build": "prisma generate && next build"
+
+# If using standalone mode, ensure Prisma files are copied to the output:
+mkdir -p .next/standalone/.prisma/client
+cp -r node_modules/.prisma/client/* .next/standalone/.prisma/client/
+
+# For Docker deployments, ensure the Dockerfile includes Prisma generation:
+# RUN npx prisma generate
+```
+
+**Problem**: "Query engine binary for current platform could not be found" error despite running Prisma generate
+**Solution**: This can happen when using different environments for build and runtime:
+
+```bash
+# Set the correct environment variables during build
+PRISMA_SCHEMA_ENGINE_BINARY=schema-engine-linux-musl \
+PRISMA_QUERY_ENGINE_BINARY=query-engine-linux-musl \
+PRISMA_ENGINES_CHECKSUM=checksums-engine-linux-musl \
+npx prisma generate
+
+# Include specific binaries in your deployment
+# See: https://www.prisma.io/docs/orm/prisma-client/deployment/edge-environments
+```
+
 For any other issues, please check the application logs or open a GitHub issue with detailed reproduction steps.
 
 # shoolinconsultancy
