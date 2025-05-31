@@ -1,0 +1,137 @@
+// Color Palette
+$colors: (
+  // Primary Colors
+  primary: (
+    main: #1A1A1A,     // Rich black - represents sophistication and elegance
+    light: #333333,    // Light black for hover states
+    dark: #000000,     // Pure black for active states
+  ),
+  
+  // Secondary Colors
+  secondary: (
+    main: #C5B358,     // Royal Gold - represents prestige and excellence
+    light: #D4C878,    // Light gold for accents
+    dark: #A69449,     // Dark gold for contrast
+  ),
+  
+  // Neutral Colors
+  neutral: (
+    100: #FFFFFF,      // White
+    200: #F8F9FA,      // Light background
+    300: #E9ECEF,      // Borders
+    400: #CED4DA,      // Disabled state
+    500: #ADB5BD,      // Muted text
+    600: #6C757D,      // Secondary text
+    700: #495057,      // Primary text
+    800: #343A40,      // Headings
+    900: #212529,      // Dark text
+  ),
+  
+  // Accent Colors
+  accent: (
+    success: #2E7D32,  // Green for success states
+    warning: #ED6C02,  // Orange for warnings
+    error: #D32F2F,    // Red for errors
+    info: #0288D1,     // Blue for information
+  )
+);
+
+// Typography
+$font-weights: (
+  light: 300,
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+);
+
+$font-sizes: (
+  xs: 0.75rem,    // 12px
+  sm: 0.875rem,   // 14px
+  base: 1rem,     // 16px
+  lg: 1.125rem,   // 18px
+  xl: 1.25rem,    // 20px
+  '2xl': 1.5rem,  // 24px
+  '3xl': 1.875rem,// 30px
+  '4xl': 2.25rem, // 36px
+);
+
+// Spacing
+$spacing: (
+  0: 0,
+  1: 0.25rem,     // 4px
+  2: 0.5rem,      // 8px
+  3: 0.75rem,     // 12px
+  4: 1rem,        // 16px
+  5: 1.25rem,     // 20px
+  6: 1.5rem,      // 24px
+  8: 2rem,        // 32px
+  10: 2.5rem,     // 40px
+  12: 3rem,       // 48px
+  16: 4rem,       // 64px
+);
+
+// Breakpoints
+$breakpoints: (
+  xs: 0,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  '2xl': 1536px,
+);
+
+// Mixins
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+}
+
+@mixin transition($property: all, $duration: 0.3s, $timing: ease-in-out) {
+  transition: $property $duration $timing;
+}
+
+@mixin elevation($level) {
+  @if $level == 1 {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  } @else if $level == 2 {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  } @else if $level == 3 {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+  } @else if $level == 4 {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@mixin responsive($breakpoint) {
+  @media (min-width: map-get($breakpoints, $breakpoint)) {
+    @content;
+  }
+}
+
+// Button Styles
+@mixin button-base {
+  @include flex(row, center, center);
+  @include transition;
+  padding: map-get($spacing, 2) map-get($spacing, 4);
+  border-radius: 0.25rem;
+  font-weight: map-get($font-weights, medium);
+  cursor: pointer;
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-variant($bg-color, $text-color, $hover-color) {
+  background-color: $bg-color;
+  color: $text-color;
+  
+  &:hover:not(:disabled) {
+    background-color: $hover-color;
+  }
+}

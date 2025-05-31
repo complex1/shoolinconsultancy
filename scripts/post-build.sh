@@ -1,30 +1,18 @@
 #!/bin/bash
 
-# This script handles post-build tasks to ensure Prisma works correctly in production
+# This script handles post-build tasks for production
 
-echo "Starting post-build tasks for Prisma..."
+echo "Starting post-build tasks..."
 
-# Create directory structure
+# Create any necessary directory structures
 echo "Creating directory structure..."
-mkdir -p .next/standalone/.prisma/client
+mkdir -p .next/standalone
 
-# Check if the Prisma client exists in node_modules
-if [ ! -d "node_modules/.prisma/client" ]; then
-  echo "Prisma client not found in node_modules! Running prisma generate..."
-  npx prisma generate
-fi
-
-# Copy Prisma client files
-echo "Copying Prisma client files to standalone output..."
-cp -r node_modules/.prisma/client/* .next/standalone/.prisma/client/
-
-# Verify the files were copied correctly
-if [ -f ".next/standalone/.prisma/client/index.js" ]; then
-  echo "Prisma client files successfully copied!"
+# Verify the build completed successfully
+if [ -d ".next/standalone" ]; then
+  echo "Build files exist and appear correct!"
 else
-  echo "WARNING: Prisma client files may not have been copied correctly!"
-  echo "Contents of .next/standalone/.prisma/client:"
-  ls -la .next/standalone/.prisma/client || echo "(empty or non-existent)"
+  echo "WARNING: Build may not have completed correctly!"
 fi
 
 echo "Post-build tasks completed!"

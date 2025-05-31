@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ashoka Pillar -->
+  <path d="M100 10L110 15H90L100 10Z" stroke="#DAA520" stroke-width="1"/>
+  <path d="M95 15V40M105 15V40" stroke="#DAA520" stroke-width="1"/>
+  <rect x="85" y="40" width="30" height="4" fill="#DAA520"/>
+  
+  <!-- Text -->
+  <text x="100" y="60" font-family="Arial-Bold, Arial" font-weight="700" font-size="12" fill="#DAA520" text-anchor="middle">MINISTRY OF LAW</text>
+  <text x="100" y="74" font-family="Arial" font-size="10" fill="#DAA520" text-anchor="middle">GOVERNMENT OF INDIA</text>
+  
+  <!-- Decorative Elements -->
+  <path d="M40 30H80" stroke="#DAA520" stroke-width="1"/>
+  <path d="M120 30H160" stroke="#DAA520" stroke-width="1"/>
+  <circle cx="30" cy="30" r="4" stroke="#DAA520" stroke-width="1"/>
+  <circle cx="170" cy="30" r="4" stroke="#DAA520" stroke-width="1"/>
+</svg> 

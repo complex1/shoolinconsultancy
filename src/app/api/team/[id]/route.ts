@@ -1,5 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+
+// Static team data
+const staticTeamMembers = [
+  {
+    id: '1',
+    name: 'Rajesh Kumar',
+    position: 'Senior Partner',
+    bio: 'Over 20 years of experience in corporate and international law. Graduated from National Law School of India University.',
+    imageUrl: '/team/attorney1.svg',
+    order: 1,
+    email: 'rajesh.kumar@shoolin.com',
+    phone: '+91 98765 43210',
+    specializations: ['Corporate Law', 'International Law', 'Mergers & Acquisitions'],
+    education: 'LL.B., National Law School of India University',
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-10')
+  },
+  {
+    id: '2',
+    name: 'Priya Sharma',
+    position: 'Managing Partner',
+    bio: 'Specializes in intellectual property and technology law. Previously worked with leading firms in Delhi and Mumbai.',
+    imageUrl: '/team/attorney2.svg',
+    order: 2,
+    email: 'priya.sharma@shoolin.com',
+    phone: '+91 98765 43211',
+    specializations: ['Intellectual Property', 'Technology Law', 'Data Privacy'],
+    education: 'LL.M. in IP Law, Delhi University',
+    createdAt: new Date('2024-01-12'),
+    updatedAt: new Date('2024-01-12')
+  },
+  {
+    id: '3',
+    name: 'Rahul Singh',
+    position: 'Associate Partner',
+    bio: 'Expert in taxation and financial regulations. Has represented major corporations in high-stakes litigation.',
+    imageUrl: '/team/attorney1.svg',
+    order: 3,
+    email: 'rahul.singh@shoolin.com',
+    phone: '+91 98765 43212',
+    specializations: ['Taxation', 'Financial Regulations', 'Corporate Litigation'],
+    education: 'LL.B., Mumbai University; Chartered Accountant',
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15')
+  }
+];
 
 export async function GET(
   request: NextRequest,
@@ -7,18 +52,10 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
+    const id = resolvedParams.id;
     
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid team member ID' },
-        { status: 400 }
-      );
-    }
-    
-    const teamMember = await prisma.teamMember.findUnique({
-      where: { id },
-    });
+    // Find team member with the matching ID
+    const teamMember = staticTeamMembers.find(member => member.id === id);
     
     if (!teamMember) {
       return NextResponse.json(
@@ -37,124 +74,16 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid team member ID' },
-        { status: 400 }
-      );
-    }
-    
-    // Parse the request body
-    const body = await request.json();
-    const { name, position, bio, imageUrl, order } = body;
-    
-    // Validate required fields
-    if (!name || !position || !bio) {
-      return NextResponse.json(
-        { error: 'Missing required fields' }, 
-        { status: 400 }
-      );
-    }
-    
-    // Check if team member exists
-    const teamMember = await prisma.teamMember.findUnique({
-      where: { id },
-    });
-    
-    if (!teamMember) {
-      return NextResponse.json(
-        { error: 'Team member not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Update the team member
-    const updatedTeamMember = await prisma.teamMember.update({
-      where: { id },
-      data: {
-        name,
-        position,
-        bio,
-        imageUrl,
-        order: order || 999, // Default to a high number if not provided
-      },
-    });
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Team member updated successfully',
-      teamMember: updatedTeamMember,
-    });
-  } catch (error) {
-    console.error('Error updating team member:', error);
-    return NextResponse.json(
-      { error: 'Failed to update team member' },
-      { status: 500 }
-    );
-  }
+export async function PUT() {
+  return NextResponse.json(
+    { error: 'Team member updates are disabled' },
+    { status: 403 }
+  );
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid team member ID' },
-        { status: 400 }
-      );
-    }
-    
-    // Check if team member exists
-    const teamMember = await prisma.teamMember.findUnique({
-      where: { id },
-    });
-    
-    if (!teamMember) {
-      return NextResponse.json(
-        { error: 'Team member not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Check if the team member has associated blog posts
-    const postsCount = await prisma.blogPost.count({
-      where: { authorId: id }
-    });
-    
-    if (postsCount > 0) {
-      return NextResponse.json(
-        { error: 'Cannot delete team member with associated blog posts. Please reassign or delete those posts first.' },
-        { status: 409 }
-      );
-    }
-    
-    // Delete the team member
-    await prisma.teamMember.delete({
-      where: { id },
-    });
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Team member deleted successfully',
-    });
-  } catch (error) {
-    console.error('Error deleting team member:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete team member' },
-      { status: 500 }
-    );
-  }
+export async function DELETE() {
+  return NextResponse.json(
+    { error: 'Team member deletion is disabled' },
+    { status: 403 }
+  );
 }

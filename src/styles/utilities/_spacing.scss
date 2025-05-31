@@ -1,0 +1,41 @@
+// Spacing utilities
+@each $space-key, $space-value in $spacing {
+  .m {
+    &t-#{$space-key} { margin-top: $space-value; }
+    &r-#{$space-key} { margin-right: $space-value; }
+    &b-#{$space-key} { margin-bottom: $space-value; }
+    &l-#{$space-key} { margin-left: $space-value; }
+    &x-#{$space-key} {
+      margin-left: $space-value;
+      margin-right: $space-value;
+    }
+    &y-#{$space-key} {
+      margin-top: $space-value;
+      margin-bottom: $space-value;
+    }
+    &-#{$space-key} { margin: $space-value; }
+  }
+
+  .p {
+    &t-#{$space-key} { padding-top: $space-value; }
+    &r-#{$space-key} { padding-right: $space-value; }
+    &b-#{$space-key} { padding-bottom: $space-value; }
+    &l-#{$space-key} { padding-left: $space-value; }
+    &x-#{$space-key} {
+      padding-left: $space-value;
+      padding-right: $space-value;
+    }
+    &y-#{$space-key} {
+      padding-top: $space-value;
+      padding-bottom: $space-value;
+    }
+    &-#{$space-key} { padding: $space-value; }
+  }
+}
+
+// Gap utilities
+.gap {
+  @each $space-key, $space-value in $spacing {
+    &-#{$space-key} { gap: $space-value; }
+  }
+}

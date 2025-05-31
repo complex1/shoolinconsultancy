@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Base Circle -->
+    <circle cx="200" cy="200" r="190" stroke="#C5B358" stroke-width="2" opacity="0.1"/>
+    <circle cx="200" cy="200" r="170" stroke="#C5B358" stroke-width="2" opacity="0.2"/>
+    
+    <!-- Scales of Justice -->
+    <g transform="translate(100, 120)">
+        <!-- Center Pillar -->
+        <rect x="98" y="0" width="4" height="160" fill="#C5B358"/>
+        
+        <!-- Top Crossbar -->
+        <rect x="0" y="0" width="200" height="4" fill="#C5B358"/>
+        
+        <!-- Left Scale -->
+        <g>
+            <path d="M20 10 L80 10 L100 50 L0 50 Z" fill="#C5B358" opacity="0.8"/>
+            <line x1="50" y1="0" x2="50" y2="10" stroke="#C5B358" stroke-width="2"/>
+        </g>
+        
+        <!-- Right Scale -->
+        <g>
+            <path d="M120 10 L180 10 L200 50 L100 50 Z" fill="#C5B358" opacity="0.8"/>
+            <line x1="150" y1="0" x2="150" y2="10" stroke="#C5B358" stroke-width="2"/>
+        </g>
+    </g>
+    
+    <!-- Decorative Sanskrit Om Symbol -->
+    <g transform="translate(165, 250)">
+        <path d="M35,0 C50,0 70,15 70,45 C70,75 50,90 35,90 C20,90 0,75 0,45 C0,15 20,0 35,0 Z" fill="none" stroke="#C5B358" stroke-width="2"/>
+        <path d="M35,20 C42,20 52,27 52,45 C52,63 42,70 35,70 C28,70 18,63 18,45 C18,27 28,20 35,20" fill="none" stroke="#C5B358" stroke-width="2"/>
+    </g>
+    
+    <!-- Outer Decorative Elements -->
+    <g opacity="0.6">
+        <circle cx="200" cy="50" r="3" fill="#C5B358"/>
+        <circle cx="200" cy="350" r="3" fill="#C5B358"/>
+        <circle cx="50" cy="200" r="3" fill="#C5B358"/>
+        <circle cx="350" cy="200" r="3" fill="#C5B358"/>
+    </g>
+</svg>

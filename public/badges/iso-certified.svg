@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Circle -->
+  <circle cx="60" cy="60" r="58" stroke="#DAA520" stroke-width="2"/>
+  
+  <!-- Inner Circle -->
+  <circle cx="60" cy="60" r="52" stroke="#DAA520" stroke-width="1" stroke-dasharray="4 2"/>
+  
+  <!-- ISO Text -->
+  <text x="60" y="45" font-family="Arial-Bold, Arial" font-weight="700" font-size="24" fill="#DAA520" text-anchor="middle">ISO</text>
+  
+  <!-- 9001:2015 Text -->
+  <text x="60" y="70" font-family="Arial" font-size="18" fill="#DAA520" text-anchor="middle">9001:2015</text>
+  
+  <!-- Certified Text -->
+  <text x="60" y="90" font-family="Arial" font-size="14" fill="#DAA520" text-anchor="middle">CERTIFIED</text>
+  
+  <!-- Stars -->
+  <path d="M30 35L32 40L27 38H33L28 40L30 35Z" fill="#DAA520"/>
+  <path d="M90 35L92 40L87 38H93L88 40L90 35Z" fill="#DAA520"/>
+  <path d="M60 15L62 20L57 18H63L58 20L60 15Z" fill="#DAA520"/>
+</svg> 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base Circle -->
+  <circle cx="100" cy="100" r="90" fill="#8B0000" />
+  
+  <!-- Inner Circle -->
+  <circle cx="100" cy="100" r="80" stroke="#C5B358" stroke-width="2" fill="none" />
+  
+  <!-- Decorative Lines -->
+  <path d="M60 100 L140 100" stroke="#C5B358" stroke-width="3" />
+  <path d="M100 60 L100 140" stroke="#C5B358" stroke-width="3" />
+  
+  <!-- Scales of Justice -->
+  <g transform="translate(50, 70) scale(0.8)">
+    <path d="M100 40 L120 80 L80 80 Z" fill="#C5B358"/>
+    <rect x="98" y="80" width="4" height="50" fill="#C5B358"/>
+    <circle cx="80" cy="90" r="10" stroke="#C5B358" stroke-width="2" fill="none"/>
+    <circle cx="120" cy="90" r="10" stroke="#C5B358" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Text Path -->
+  <path id="curve" d="M40 140 A60 60 0 0 0 160 140" fill="none"/>
+  <text>
+    <textPath href="#curve" startOffset="50%" text-anchor="middle" fill="#C5B358" font-family="serif" font-size="16">
+      EST. 2010
+    </textPath>
+  </text>
+</svg>

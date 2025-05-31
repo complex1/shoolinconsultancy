@@ -14,19 +14,11 @@ echo "🛑 Stopping any existing containers..."
 docker stop shoolin-website 2>/dev/null || true
 docker rm shoolin-website 2>/dev/null || true
 
-# Step 3: Create data and media directories if they don't exist
+# Step 3: Create media directory if it doesn't exist
 echo "📁 Setting up required directories..."
-mkdir -p data
 mkdir -p public/uploads/media
 
-# Step 4: Copy database file if it doesn't exist in data directory
-if [ ! -f "data/shoolin.db" ]; then
-  echo "🗄️  Setting up database..."
-  cp prisma/shoolin.db data/shoolin.db
-  chmod 644 data/shoolin.db
-fi
-
-# Step 5: Set proper permissions for media uploads directory
+# Step 4: Set proper permissions for media uploads directory
 echo "🔐 Setting permissions for media uploads directory..."
 chmod -R 755 public/uploads/media
 

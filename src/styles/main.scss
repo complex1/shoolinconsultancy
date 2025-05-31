@@ -1,0 +1,21 @@
+@import 'variables';
+
+// Import base styles
+@import 'base/typography';
+@import 'base/reset';
+
+// Import components
+@import 'components/buttons';
+@import 'components/forms';
+@import 'components/cards';
+@import 'components/navbar';
+
+// Import layouts
+@import 'layouts/header';
+@import 'layouts/footer';
+@import 'layouts/grid';
+
+// Import utilities
+@import 'utilities/spacing';
+@import 'utilities/flexbox';
+@import 'utilities/animations';

@@ -194,7 +194,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </Link>
               </li>
               
-              {/* <li>
+              <li>
                 <Link 
                   href="/admin/seo" 
                   className={`flex items-center px-6 py-3 ${isActive('/admin/seo')}`}
@@ -205,7 +205,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   </svg>
                   SEO
                 </Link>
-              </li> */}
+              </li> 
             </ul>
           </nav>
           

@@ -1,0 +1,85 @@
+// Base typography styles using our variables
+html {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body {
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: map-get($font-weights, regular);
+  color: map-get(map-get($colors, neutral), 700);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-cormorant), serif;
+  color: map-get(map-get($colors, neutral), 900);
+  margin-bottom: map-get($spacing, 4);
+}
+
+h1 {
+  font-size: map-get($font-sizes, '4xl');
+  font-weight: map-get($font-weights, bold);
+  line-height: 1.2;
+  
+  @include responsive(md) {
+    font-size: 3rem; // 48px
+  }
+}
+
+h2 {
+  font-size: map-get($font-sizes, '3xl');
+  font-weight: map-get($font-weights, bold);
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: map-get($font-sizes, '2xl');
+  font-weight: map-get($font-weights, semibold);
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: map-get($font-sizes, xl);
+  font-weight: map-get($font-weights, semibold);
+}
+
+h5 {
+  font-size: map-get($font-sizes, lg);
+  font-weight: map-get($font-weights, medium);
+}
+
+h6 {
+  font-size: map-get($font-sizes, base);
+  font-weight: map-get($font-weights, medium);
+}
+
+p {
+  margin-bottom: map-get($spacing, 4);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+a {
+  color: map-get(map-get($colors, primary), main);
+  text-decoration: none;
+  @include transition(color);
+  
+  &:hover {
+    color: map-get(map-get($colors, primary), dark);
+  }
+}
+
+.text {
+  &-sm { font-size: map-get($font-sizes, sm); }
+  &-base { font-size: map-get($font-sizes, base); }
+  &-lg { font-size: map-get($font-sizes, lg); }
+  &-xl { font-size: map-get($font-sizes, xl); }
+  
+  &-light { font-weight: map-get($font-weights, light); }
+  &-regular { font-weight: map-get($font-weights, regular); }
+  &-medium { font-weight: map-get($font-weights, medium); }
+  &-semibold { font-weight: map-get($font-weights, semibold); }
+  &-bold { font-weight: map-get($font-weights, bold); }
+}

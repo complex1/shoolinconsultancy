@@ -1,16 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+
+// Static team data
+const staticTeamMembers = [
+  {
+    id: '1',
+    name: 'Rajesh Kumar',
+    position: 'Senior Partner',
+    bio: 'Over 20 years of experience in corporate and international law. Graduated from National Law School of India University.',
+    imageUrl: '/team/attorney1.svg',
+    order: 1
+  },
+  {
+    id: '2',
+    name: 'Priya Sharma',
+    position: 'Managing Partner',
+    bio: 'Specializes in intellectual property and technology law. Previously worked with leading firms in Delhi and Mumbai.',
+    imageUrl: '/team/attorney2.svg',
+    order: 2
+  },
+  {
+    id: '3',
+    name: 'Rahul Singh',
+    position: 'Associate Partner',
+    bio: 'Expert in taxation and financial regulations. Has represented major corporations in high-stakes litigation.',
+    imageUrl: '/team/attorney1.svg',
+    order: 3
+  }
+];
 
 export async function GET() {
   try {
-    const teamMembers = await prisma.teamMember.findMany({
-      orderBy: {
-        order: 'asc'
-      }
-    });
-    
-    // For admin panel, return the full team member records
-    return NextResponse.json(teamMembers);
+    return NextResponse.json(staticTeamMembers);
   } catch (error) {
     console.error('Error fetching team members:', error);
     return NextResponse.json(
@@ -20,39 +40,12 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    // This endpoint would typically be protected by authentication in a real app
-    
-    // Parse the request body
-    const body = await request.json();
-    const { name, position, bio, imageUrl, order } = body;
-    
-    // Validate required fields
-    if (!name || !position || !bio) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    // Create the team member
-    const teamMember = await prisma.teamMember.create({
-      data: {
-        name,
-        position,
-        bio,
-        imageUrl: imageUrl || null,
-        order: order || 999,
-      },
-    });
-
-    // Return success response
-    return NextResponse.json({
-      success: true,
-      message: 'Team member created successfully',
-      id: teamMember.id,
-    });
+export async function POST() {
+  try {    
+    return NextResponse.json(
+      { error: 'Team member creation is disabled' },
+      { status: 403 }
+    );
   } catch (error) {
     console.error('Error creating team member:', error);
     return NextResponse.json(

@@ -1,0 +1,67 @@
+// Flexbox utilities using our mixins
+.flex {
+  display: flex;
+  
+  &-row { flex-direction: row; }
+  &-row-reverse { flex-direction: row-reverse; }
+  &-col { flex-direction: column; }
+  &-col-reverse { flex-direction: column-reverse; }
+  
+  // Justify Content
+  &-justify {
+    &-start { justify-content: flex-start; }
+    &-end { justify-content: flex-end; }
+    &-center { justify-content: center; }
+    &-between { justify-content: space-between; }
+    &-around { justify-content: space-around; }
+    &-evenly { justify-content: space-evenly; }
+  }
+  
+  // Align Items
+  &-items {
+    &-start { align-items: flex-start; }
+    &-end { align-items: flex-end; }
+    &-center { align-items: center; }
+    &-baseline { align-items: baseline; }
+    &-stretch { align-items: stretch; }
+  }
+  
+  // Flex Wrap
+  &-wrap { flex-wrap: wrap; }
+  &-nowrap { flex-wrap: nowrap; }
+  &-wrap-reverse { flex-wrap: wrap-reverse; }
+  
+  // Grow & Shrink
+  &-1 { flex: 1 1 0%; }
+  &-auto { flex: 1 1 auto; }
+  &-initial { flex: 0 1 auto; }
+  &-none { flex: none; }
+  
+  // Common Combinations
+  &-center-center {
+    @include flex(row, center, center);
+  }
+  
+  &-between-center {
+    @include flex(row, space-between, center);
+  }
+  
+  &-col-center {
+    @include flex(column, center, center);
+  }
+}
+
+// Responsive flex utilities
+@each $breakpoint, $width in $breakpoints {
+  @include responsive($breakpoint) {
+    .flex-#{$breakpoint} {
+      display: flex;
+      
+      &-row { flex-direction: row; }
+      &-col { flex-direction: column; }
+      
+      &-wrap { flex-wrap: wrap; }
+      &-nowrap { flex-wrap: nowrap; }
+    }
+  }
+}

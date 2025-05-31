@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { FadeInView, StaggerParent } from './Animations';
 
 // Define the Service type
 type Service = {
@@ -37,45 +39,6 @@ const ServicesSection = () => {
       } catch (err) {
         console.error('Error fetching services:', err);
         setError('Unable to load services. Please try again later.');
-        // Use fallback data if API fails
-        setServices([
-          {
-            id: 1,
-            title: 'Business Consulting',
-            description: 'Strategic business consulting to optimize operations, enhance productivity, and drive sustainable growth.',
-            longDescription: 'Detailed business consulting services description',
-            iconUrl: '/icons/business.svg',
-            slug: 'business',
-            featured: true
-          },
-          {
-            id: 2,
-            title: 'Financial Advisory',
-            description: 'Expert financial guidance to help you make informed decisions, manage resources, and achieve financial stability.',
-            longDescription: 'Detailed financial advisory services description',
-            iconUrl: '/icons/finance.svg',
-            slug: 'financial',
-            featured: true
-          },
-          {
-            id: 3,
-            title: 'Strategic Planning',
-            description: 'Comprehensive strategic planning services to align your vision with practical, actionable business initiatives.',
-            longDescription: 'Detailed strategic planning services description',
-            iconUrl: '/icons/strategy.svg',
-            slug: 'strategy',
-            featured: true
-          },
-          {
-            id: 4,
-            title: 'Digital Transformation',
-            description: 'Transform your business with cutting-edge digital solutions that enhance efficiency and customer experience.',
-            longDescription: 'Detailed digital transformation services description',
-            iconUrl: '/icons/digital.svg',
-            slug: 'digital',
-            featured: true
-          },
-        ]);
       } finally {
         setLoading(false);
       }
@@ -85,60 +48,84 @@ const ServicesSection = () => {
   }, []);
 
   return (
-    <section className="py-12 sm:py-16 bg-gray-50">
-      <div className="container mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-slideUp">
-          <h2 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-3 sm:mb-4">Our Services</h2>
-          <p className="text-gray-600 text-base sm:text-lg px-4 sm:px-0">
-            We provide comprehensive consulting services to help businesses thrive in today&apos;s competitive landscape.
-          </p>
-        </div>
+    <section className="py-20 sm:py-24 bg-gradient-to-b from-maroon-900/5 to-transparent relative">
+      {/* Background Pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.02]" 
+        style={{
+          backgroundImage: 'url(/patterns/indian-pattern.svg)',
+          backgroundSize: '64px',
+          backgroundRepeat: 'repeat'
+        }}
+      />
+      
+      <div className="container mx-auto relative px-4 sm:px-6">
+        <FadeInView>
+          <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+            <span className="inline-block px-4 py-2 rounded-full bg-gold-400/10 text-gold-400 text-sm font-medium mb-6">
+              धर्मो रक्षति रक्षितः
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-maroon-900 mb-4">
+              Areas of Practice
+            </h2>
+            <div className="w-24 h-0.5 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 mx-auto mb-6" />
+            <p className="text-gray-600 text-lg sm:text-xl leading-relaxed">
+              Our team of experienced attorneys provides comprehensive legal services, 
+              combining modern expertise with traditional values to serve justice.
+            </p>
+          </div>
+        </FadeInView>
 
         {loading ? (
           <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-800"></div>
+            <motion.div 
+              className="h-12 w-12 border-4 border-black-700 rounded-full border-t-transparent"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
           </div>
         ) : error ? (
           <div className="text-center text-red-500 p-4">
             {error}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 px-4 sm:px-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <div
-                key={service.id}
-                className={`bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all transform hover:-translate-y-1 animate-slideUp`}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                key={index}
+                className="p-6 rounded-lg bg-gradient-to-r from-black-700 to-black-600 border border-gold-400/20 transform transition-all duration-300 hover:scale-105"
               >
-                <div className="p-5 sm:p-6">
-                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-5 sm:mb-6 mx-auto">
-                    <Image 
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gold-400/10 flex items-center justify-center mr-4">
+                    <Image
                       src={service.iconUrl}
                       alt={service.title}
-                      width={32}
-                      height={32}
-                      className="h-8 w-8"
+                      width={24}
+                      height={24}
+                      className="text-gold-400"
                     />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-center mb-2">{service.title}</h3>
-                  <p className="text-gray-600 text-center text-sm sm:text-base mb-4">{service.description}</p>
-                  <div className="text-center">
-                    <Link href={`/services#${service.slug}`} className="text-blue-800 font-medium hover:text-blue-600 flex items-center justify-center gap-1 group">
-                      Learn more 
-                      <span className="transform transition-transform group-hover:translate-x-1">→</span>
-                    </Link>
-                  </div>
+                  <h3 className="text-xl font-semibold text-gold-400">{service.title}</h3>
                 </div>
+                <p className="text-gray-300">{service.description}</p>
               </div>
             ))}
           </div>
         )}
 
-        <div className="mt-12 text-center">
-          <Link href="/services" className="btn btn-primary">
-            View All Services
-          </Link>
-        </div>
+        <FadeInView delay={0.2}>
+          <div className="mt-16 text-center">
+            <Link 
+              href="/services" 
+              className="inline-flex items-center justify-center px-8 py-3 border-2 border-black-700 
+                         text-black-700 hover:text-white hover:bg-black-700 font-semibold rounded-lg 
+                         transition-all duration-300 relative overflow-hidden group"
+            >
+              <span className="relative z-10">View All Practice Areas</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-black-700 to-black-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+            </Link>
+          </div>
+        </FadeInView>
       </div>
     </section>
   );

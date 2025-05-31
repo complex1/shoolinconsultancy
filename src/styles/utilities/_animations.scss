@@ -1,0 +1,141 @@
+// Animation utilities
+.animate {
+  &-fade {
+    @include transition(opacity);
+    
+    &-in {
+      opacity: 0;
+      
+      &.active {
+        opacity: 1;
+      }
+    }
+    
+    &-out {
+      opacity: 1;
+      
+      &.active {
+        opacity: 0;
+      }
+    }
+  }
+  
+  &-slide {
+    @include transition(transform);
+    
+    &-up {
+      transform: translateY(20px);
+      
+      &.active {
+        transform: translateY(0);
+      }
+    }
+    
+    &-down {
+      transform: translateY(-20px);
+      
+      &.active {
+        transform: translateY(0);
+      }
+    }
+    
+    &-left {
+      transform: translateX(20px);
+      
+      &.active {
+        transform: translateX(0);
+      }
+    }
+    
+    &-right {
+      transform: translateX(-20px);
+      
+      &.active {
+        transform: translateX(0);
+      }
+    }
+  }
+  
+  &-scale {
+    @include transition(transform);
+    
+    &-up {
+      transform: scale(0.95);
+      
+      &.active {
+        transform: scale(1);
+      }
+    }
+    
+    &-down {
+      transform: scale(1.05);
+      
+      &.active {
+        transform: scale(1);
+      }
+    }
+  }
+}
+
+// Hover animations
+.hover {
+  &-scale {
+    @include transition(transform);
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  
+  &-lift {
+    @include transition(transform);
+    
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+  
+  &-shadow {
+    @include transition((transform, box-shadow));
+    
+    &:hover {
+      transform: translateY(-2px);
+      @include elevation(3);
+    }
+  }
+}
+
+// Loading animations
+.loading {
+  &-spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  &-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

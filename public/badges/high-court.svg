@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Court Building -->
+  <path d="M60 30H140M70 30V50M130 30V50M100 20L140 30L100 40L60 30L100 20Z" stroke="#DAA520" stroke-width="1.5"/>
+  <rect x="65" y="50" width="70" height="4" fill="#DAA520"/>
+  
+  <!-- Pillars -->
+  <path d="M80 30V50M90 30V50M110 30V50M120 30V50" stroke="#DAA520" stroke-width="1"/>
+  
+  <!-- Text -->
+  <text x="100" y="65" font-family="Arial-Bold, Arial" font-weight="700" font-size="12" fill="#DAA520" text-anchor="middle">HIGH COURT</text>
+  <text x="100" y="75" font-family="Arial" font-size="8" fill="#DAA520" text-anchor="middle">SUPREME JUDICIAL AUTHORITY</text>
+  
+  <!-- Decorative Elements -->
+  <path d="M30 40H50" stroke="#DAA520" stroke-width="1"/>
+  <path d="M150 40H170" stroke="#DAA520" stroke-width="1"/>
+  <circle cx="25" cy="40" r="3" stroke="#DAA520" stroke-width="1"/>
+  <circle cx="175" cy="40" r="3" stroke="#DAA520" stroke-width="1"/>
+</svg> 

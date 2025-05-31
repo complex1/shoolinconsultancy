@@ -1,18 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCalendar,
+  faClock,
+  faShareNodes,
+  faLink
+} from '@fortawesome/free-solid-svg-icons';
+import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-interface TeamMember {
+interface Author {
   id: number;
   name: string;
-  position: string;
+  role: string;
+  image: string;
   bio: string;
-  imageUrl: string | null;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
+  linkedin?: string;
+  twitter?: string;
 }
 
 interface BlogPost {
@@ -22,42 +30,232 @@ interface BlogPost {
   content: string;
   createdAt: string;
   updatedAt: string;
-  author: TeamMember | null;
+  author: Author;
   tags: string[];
-  image?: string;
-  imageUrl?: string;
+  readTime: number;
+  coverImage: string;
 }
+
+interface TableOfContentsItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+const ShareButtons = ({ url, title }: { url: string, title: string }) => {
+  const encodedUrl = encodeURIComponent(url);
+  const encodedTitle = encodeURIComponent(title);
+
+  return (
+    <div className="flex items-center gap-4">
+      <button
+        onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`, '_blank')}
+        className="text-neutral-600 hover:text-black-700 transition"
+        aria-label="Share on Twitter"
+      >
+        <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
+      </button>
+      <button
+        onClick={() => window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}`, '_blank')}
+        className="text-neutral-600 hover:text-black-700 transition"
+        aria-label="Share on LinkedIn"
+      >
+        <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5" />
+      </button>
+      <button
+        onClick={() => {
+          navigator.clipboard.writeText(url);
+          // TODO: Show a toast notification
+        }}
+        className="text-neutral-600 hover:text-gold-400 transition"
+        aria-label="Copy link"
+      >
+        <FontAwesomeIcon icon={faLink} className="w-5 h-5" />
+      </button>
+    </div>
+  );
+};
+
+const TableOfContents = ({ items, activeId }: { items: TableOfContentsItem[], activeId: string }) => {
+  return (
+    <nav className="space-y-2">
+      <h3 className="text-xl font-semibold text-neutral-800 mb-4">Table of Contents</h3>
+      {items.map((item) => (
+        <a
+          key={item.id}
+          href={`#${item.id}`}
+          className={`block text-sm py-1.5 pl-${(item.level - 1) * 4} ${
+            activeId === item.id
+              ? 'text-black-700 font-medium bg-neutral-50 rounded-md pl-3'
+              : 'text-neutral-600 hover:text-black-700 hover:bg-neutral-50 rounded-md pl-3'
+          } transition-all duration-200`}
+        >
+          {item.text}
+        </a>
+      ))}
+    </nav>
+  );
+};
+
+const ReadingProgress = () => {
+  const [progress, setProgress] = useState(0);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+      setProgress(Math.min(100, Math.max(0, scrollPercent)));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="fixed top-0 left-0 w-full h-1 bg-neutral-200 z-50">
+      <motion.div
+        className="h-full bg-black-700"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+};
 
 export default function BlogPostClient({ postId }: { postId: string }) {
   const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>([]);
+  const [activeHeading, setActiveHeading] = useState('');
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fetchBlogPost = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`/api/blog/${postId}`);
-        
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('Blog post not found');
-          }
-          throw new Error('Failed to fetch blog post');
-        }
-        
-        const data = await response.json();
-        setPost(data);
-      } catch (err) {
-        console.error('Error fetching blog post:', err);
-        setError((err as Error).message || 'Failed to load blog post');
-      } finally {
-        setIsLoading(false);
-      }
+    // For demo purposes, using mock data
+    const mockPost = {
+      id: parseInt(postId),
+      title: "The Future of Legal Consulting in a Digital World",
+      content: `
+        <h2>Introduction</h2>
+        <p>The legal consulting landscape is undergoing a dramatic transformation in the digital age. As organizations across industries grapple with technological disruption, the role of legal consultants has evolved significantly.</p>
+
+        <h2>Digital Transformation Impact</h2>
+        <p>As organizations navigate the complexities of digital transformation, legal consultants must adapt their approaches and methodologies. The integration of digital technologies has become central to strategic planning and implementation.</p>
+
+        <h3>Key Areas of Focus</h3>
+        <ul>
+          <li>Legal Tech Integration</li>
+          <li>Digital Compliance</li>
+          <li>Client Experience Enhancement</li>
+          <li>Technology Risk Management</li>
+        </ul>
+
+        <h2>Emerging Trends in Legal Consulting</h2>
+        <p>The consulting industry is witnessing several transformative trends that are reshaping how services are delivered and value is created for clients.</p>
+
+        <h2>Conclusion</h2>
+        <p>The future of legal consulting is intrinsically linked to digital innovation and transformation. Successful consultants will be those who can effectively blend traditional legal expertise with digital capabilities.</p>
+      `,
+      excerpt: "Explore how digital transformation is reshaping the landscape of legal consulting...",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      author: {
+        id: 1,
+        name: "Jane Doe",
+        role: "Senior Legal Consultant",
+        image: "/team/attorney1.svg",
+        bio: "Expert in legal technology and digital transformation with over 15 years of experience.",
+        linkedin: "https://linkedin.com/in/janedoe",
+        twitter: "https://twitter.com/janedoe"
+      },
+      tags: ["Legal Tech", "Digital Transformation", "Legal Innovation"],
+      readTime: 8,
+      coverImage: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80"
     };
-    
-    fetchBlogPost();
+
+    const mockRelatedPosts = [
+      {
+        id: 2,
+        title: "The Evolution of Legal Tech",
+        excerpt: "Understanding how technology is reshaping legal services...",
+        content: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        coverImage: "https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?auto=format&fit=crop&q=80",
+        author: {
+          id: 2,
+          name: "John Smith",
+          role: "Legal Tech Specialist",
+          image: "/team/attorney2.svg",
+          bio: "Technology expert specializing in legal innovations"
+        },
+        readTime: 6,
+        tags: ["Legal Tech", "Innovation"]
+      },
+      {
+        id: 3,
+        title: "Digital Transformation in Law",
+        excerpt: "How digital transformation is changing legal practices...",
+        content: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        coverImage: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80",
+        author: {
+          id: 3,
+          name: "Sarah Williams",
+          role: "Digital Law Expert",
+          image: "/team/attorney1.svg",
+          bio: "Expert in digital legal transformation"
+        },
+        readTime: 7,
+        tags: ["Digital Law", "Legal Tech"]
+      }
+    ];
+
+    setPost(mockPost);
+    setRelatedPosts(mockRelatedPosts);
+    setIsLoading(false);
   }, [postId]);
+
+  // Extract table of contents from content
+  useEffect(() => {
+    if (post?.content) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(post.content, 'text/html');
+      const headings = Array.from(doc.querySelectorAll('h2, h3, h4'));
+      
+      const toc = headings.map(heading => ({
+        id: heading.textContent?.toLowerCase().replace(/\s+/g, '-') ?? '',
+        text: heading.textContent ?? '',
+        level: parseInt(heading.tagName[1])
+      }));
+
+      setTableOfContents(toc);
+    }
+  }, [post?.content]);
+
+  useEffect(() => {
+    // Setup intersection observer for headings
+    if (contentRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveHeading(entry.target.id);
+            }
+          });
+        },
+        { rootMargin: '-20% 0px -80% 0px' }
+      );
+
+      const headings = contentRef.current.querySelectorAll('h2, h3, h4');
+      headings.forEach(heading => observer.observe(heading));
+
+      return () => observer.disconnect();
+    }
+  }, [post?.content]);
 
   // Format date to readable string
   const formatDate = (dateString: string) => {
@@ -72,7 +270,7 @@ export default function BlogPostClient({ postId }: { postId: string }) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-800"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black-700"></div>
       </div>
     );
   }
@@ -80,8 +278,8 @@ export default function BlogPostClient({ postId }: { postId: string }) {
   if (error || !post) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center py-20">
-        <div className="text-center text-red-500 mb-6">{error || 'Blog post not found'}</div>
-        <Link href="/blog" className="text-blue-800 hover:text-blue-600">
+        <div className="text-center text-red-600 mb-6">{error || 'Blog post not found'}</div>
+        <Link href="/blog" className="text-black-700 hover:text-black-600 font-medium">
           Return to Blog
         </Link>
       </div>
@@ -89,101 +287,183 @@ export default function BlogPostClient({ postId }: { postId: string }) {
   }
 
   return (
-    <>
-      {/* Hero section with gradient background */}
-      <section className="bg-gradient-to-br from-blue-900 to-blue-700 py-16 text-white">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="mb-4 flex justify-center gap-2">
-              {post.tags && post.tags.map((tag) => (
-                <span key={tag} className="inline-block bg-blue-800 bg-opacity-50 px-3 py-1 text-sm rounded-full">
+    <article className="min-h-screen bg-neutral-50">
+      <ReadingProgress />
+      
+      {/* Hero Section */}
+      <div className="relative h-[60vh]">
+        <Image
+          src={post.coverImage}
+          alt={post.title}
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/90 via-neutral-900/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black-700/30 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+          <div className="container mx-auto max-w-4xl">
+            <div className="flex flex-wrap gap-3 mb-4">
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 bg-white/10 text-white/90 text-sm rounded-full backdrop-blur-sm"
+                >
                   {tag}
                 </span>
               ))}
             </div>
-            <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-            <div className="flex items-center justify-center gap-4 text-blue-100">
-              <span>By {post.author ? post.author.name : 'Anonymous'}</span>
-              <span>•</span>
-              <span>{formatDate(post.createdAt)}</span>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              {post.title}
+            </h1>
+            <div className="flex items-center gap-6 text-white/90">
+              <div className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faCalendar} className="w-4 h-4" />
+                {formatDate(post.createdAt)}
+              </div>
+              <div className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faClock} className="w-4 h-4" />
+                <span>{post.readTime} min read</span>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Blog content */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto">
-          <div className="max-w-3xl mx-auto">
-            {/* Featured image */}
-            {(post.image || post.imageUrl) && (
-              <div className="mb-8 rounded-xl overflow-hidden">
-                <Image 
-                  src={post.image || post.imageUrl || ''}
-                  alt={post.title} 
-                  width={800} 
-                  height={400} 
-                  className="w-full h-auto"
-                />
-              </div>
-            )}
-
-            {/* Blog excerpt/intro */}
-            {post.excerpt && (
-              <div className="text-xl text-gray-600 mb-8 font-light leading-relaxed">
-                {post.excerpt}
-              </div>
-            )}
-            
-            {/* Main content */}
-            <div className="prose prose-lg max-w-none">
-              {/* Render content as HTML with proper sanitization in a real app */}
-              <div dangerouslySetInnerHTML={{ __html: post.content || '' }} />
-            </div>
-            
-            {/* Author info and share section */}
-            <div className="mt-12 border-t border-b border-gray-200 py-6">
-              <div className="flex flex-col md:flex-row md:justify-between gap-4">
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+          {/* Main Content */}
+          <div className="lg:w-2/3">
+            {/* Author Info */}
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-8 border border-neutral-200">
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-neutral-100">
+                  <Image
+                    src={post.author.image}
+                    alt={post.author.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <div>
-                  <p className="font-bold">Written by {post.author ? post.author.name : 'Anonymous'}</p>
-                  <p className="text-gray-500 text-sm">
-                    Published on {formatDate(post.createdAt)}
-                    {post.updatedAt !== post.createdAt && 
-                      ` • Updated on ${formatDate(post.updatedAt)}`}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <button className="p-2 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                    </svg>
-                  </button>
-                  <button className="p-2 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                    </svg>
-                  </button>
-                  <button className="p-2 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
-                    </svg>
-                  </button>
+                  <h2 className="font-semibold text-lg text-neutral-800">{post.author.name}</h2>
+                  <p className="text-neutral-600 mb-2">{post.author.role}</p>
+                  <div className="flex gap-4">
+                    {post.author.twitter && (
+                      <a
+                        href={post.author.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-500 hover:text-black-700 transition"
+                      >
+                        <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
+                      </a>
+                    )}
+                    {post.author.linkedin && (
+                      <a
+                        href={post.author.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-500 hover:text-black-700 transition"
+                      >
+                        <FontAwesomeIcon icon={faLinkedin} className="w-5 h-5" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-            
-            {/* Back to blog button */}
-            <div className="mt-10 text-center">
-              <Link 
-                href="/blog" 
-                className="btn btn-secondary inline-block border border-blue-800 text-blue-800 hover:bg-blue-50 px-6 py-3 rounded-lg font-semibold transition-colors duration-300"
-              >
-                Back to Blog
-              </Link>
+
+            {/* Content */}
+            <div
+              ref={contentRef}
+              className="bg-white rounded-lg shadow-lg p-8 prose prose-lg max-w-none border border-neutral-200
+                prose-headings:text-neutral-800 
+                prose-p:text-neutral-600 
+                prose-a:text-black-700 prose-a:no-underline hover:prose-a:text-black-600
+                prose-strong:text-neutral-800
+                prose-ul:text-neutral-600
+                prose-ol:text-neutral-600
+                prose-li:marker:text-black-700
+                prose-blockquote:border-l-black-700 prose-blockquote:text-neutral-700
+                prose-hr:border-neutral-200"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+
+            {/* Tags */}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/blog?tag=${encodeURIComponent(tag)}`}
+                  className="px-4 py-2 bg-neutral-100 text-neutral-700 hover:bg-black-700 hover:text-white rounded-md text-sm transition-colors duration-200 border border-neutral-200"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+
+            {/* Share */}
+            <div className="mt-8 flex items-center gap-4 bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+              <span className="font-medium text-neutral-800">Share this article:</span>
+              <ShareButtons
+                url={`${typeof window !== 'undefined' ? window.location.origin : ''}/blog/${post.id}`}
+                title={post.title}
+              />
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:w-1/3">
+            <div className="sticky top-8 space-y-8">
+              {/* Table of Contents */}
+              <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+                <TableOfContents items={tableOfContents} activeId={activeHeading} />
+              </div>
+
+              {/* Related Posts */}
+              <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-1 h-6 bg-black-700"></div>
+                  <h3 className="text-xl font-semibold text-neutral-800">Related Articles</h3>
+                </div>
+                <div className="space-y-6">
+                  {relatedPosts.map((relatedPost) => (
+                    <Link
+                      key={relatedPost.id}
+                      href={`/blog/${relatedPost.id}`}
+                      className="block group"
+                    >
+                      <div className="flex gap-4">
+                        <div className="relative w-24 h-24 flex-shrink-0">
+                          <Image
+                            src={relatedPost.coverImage}
+                            alt={relatedPost.title}
+                            fill
+                            className="object-cover rounded-md"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-br from-black-700/20 to-transparent rounded-md"></div>
+                        </div>
+                        <div>
+                          <h4 className="font-medium group-hover:text-black-700 transition-colors duration-200 line-clamp-2 text-neutral-800">
+                            {relatedPost.title}
+                          </h4>
+                          <div className="flex items-center gap-3 mt-2 text-sm text-neutral-500">
+                            <span className="flex items-center gap-1">
+                              <FontAwesomeIcon icon={faClock} className="w-3 h-3" />
+                              {relatedPost.readTime} min read
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </article>
   );
 }

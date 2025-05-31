@@ -1,0 +1,58 @@
+// Testimonials Page Styles
+.testimonials {
+  &-search {
+    input, select {
+      color: map-get(map-get($colors, neutral), 700); // Primary text color
+      border-color: map-get(map-get($colors, neutral), 300); // Border color
+      background-color: map-get(map-get($colors, neutral), 100); // White background
+
+      &::placeholder {
+        color: map-get(map-get($colors, neutral), 500); // Muted text
+      }
+
+      &:focus {
+        border-color: map-get(map-get($colors, primary), main);
+        box-shadow: 0 0 0 2px rgba(map-get(map-get($colors, primary), main), 0.1);
+      }
+    }
+
+    label {
+      color: map-get(map-get($colors, neutral), 800); // Headings color
+      font-weight: map-get($font-weights, medium);
+    }
+  }
+
+  &-hero {
+    background: linear-gradient(
+      to right,
+      map-get(map-get($colors, primary), dark),
+      map-get(map-get($colors, primary), main)
+    );
+  }
+
+  &-card {
+    background-color: map-get(map-get($colors, neutral), 100);
+    border-color: map-get(map-get($colors, neutral), 300);
+
+    &:hover {
+      box-shadow: 0 4px 20px rgba(map-get(map-get($colors, neutral), 900), 0.1);
+    }
+
+    .category-tag {
+      background-color: map-get(map-get($colors, neutral), 200);
+      color: map-get(map-get($colors, neutral), 700);
+    }
+
+    .quote {
+      color: map-get(map-get($colors, neutral), 700);
+    }
+
+    .author-name {
+      color: map-get(map-get($colors, primary), main);
+    }
+
+    .author-position {
+      color: map-get(map-get($colors, neutral), 600);
+    }
+  }
+}

@@ -1,73 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { writeFile } from 'fs/promises';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { NextResponse } from 'next/server';
 
-// Function to get a list of all media files
+// Static media data
+const staticMedia = [
+  {
+    id: '1',
+    title: 'Company Logo',
+    description: 'Official logo of Shoolin Consultancy',
+    type: 'image',
+    url: '/uploads/media/logo.png',
+    filename: 'logo.png',
+    filetype: 'image/png',
+    size: 45678,
+    createdAt: new Date('2025-01-15'),
+    updatedAt: new Date('2025-01-15')
+  },
+  {
+    id: '2',
+    title: 'Office Brochure',
+    description: 'Corporate brochure with service details',
+    type: 'document',
+    url: '/uploads/media/brochure.pdf',
+    filename: 'brochure.pdf',
+    filetype: 'application/pdf',
+    size: 2345678,
+    createdAt: new Date('2025-02-10'),
+    updatedAt: new Date('2025-02-10')
+  },
+  {
+    id: '3',
+    title: 'Corporate Profile',
+    description: 'Company profile and team information',
+    type: 'image',
+    url: '/uploads/media/profile.jpg',
+    filename: 'profile.jpg',
+    filetype: 'image/jpeg',
+    size: 156789,
+    createdAt: new Date('2025-03-05'),
+    updatedAt: new Date('2025-03-05')
+  }
+];
+
 export async function GET() {
   try {
-    const media = await prisma.media.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
-
-    return NextResponse.json(media, { status: 200 });
+    // Return static media data
+    return NextResponse.json(staticMedia);
   } catch (error) {
-    console.error('Failed to fetch media:', error);
-    return NextResponse.json({ error: 'Failed to fetch media' }, { status: 500 });
-  }
-}
-
-// Function to handle file uploads
-export async function POST(request: NextRequest) {
-  try {
-    // Parse the FormData
-    const formData = await request.formData();
-    const file = formData.get('file') as File | null;
-    const title = formData.get('title') as string | null;
-    const description = formData.get('description') as string | null;
-    const altText = formData.get('altText') as string | null;
-    
-    if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      );
-    }
-
-    // Generate a unique filename to prevent overwriting
-    const fileExtension = path.extname(file.name);
-    const uniqueFilename = `${uuidv4()}${fileExtension}`;
-    const relativePath = `/uploads/media/${uniqueFilename}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
-    
-    // Define the full path where the file will be saved
-    const filePath = path.join(process.cwd(), 'public', relativePath);
-    
-    // Write the file to disk
-    await writeFile(filePath, buffer);
-    
-    // Create a record in the database
-    const media = await prisma.media.create({
-      data: {
-        filename: file.name,
-        filepath: relativePath,
-        mimetype: file.type,
-        size: file.size,
-        title: title || file.name,
-        description: description || '',
-        altText: altText || '',
-      }
-    });
-    
-    return NextResponse.json(media, { status: 201 });
-  } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error('Error fetching media:', error);
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: 'Failed to fetch media' },
       { status: 500 }
     );
   }
+}
+
+export async function POST() {
+  return NextResponse.json(
+    { error: 'Media uploads are disabled' },
+    { status: 403 }
+  );
 }

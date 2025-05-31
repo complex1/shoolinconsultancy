@@ -1,34 +1,37 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+
+// Static blog post data
+const staticBlogPosts = [
+  {
+    id: '1',
+    title: 'Understanding the New Corporate Tax Laws',
+    excerpt: 'A guide to navigating the latest corporate tax regulations in India.',
+    content: '<p>Corporate tax laws in India have undergone significant changes in recent years...</p>',
+    slug: 'understanding-corporate-tax-laws',
+    imageUrl: '/images/blog/corporate-tax.jpg',
+    authorId: '1',
+    createdAt: new Date('2025-05-15'),
+    updatedAt: new Date('2025-05-15'),
+    tags: ['Corporate Law', 'Taxation', 'Finance']
+  },
+  {
+    id: '2',
+    title: 'Intellectual Property Rights for Startups',
+    excerpt: 'Protecting your innovations in the early stages of your business.',
+    content: '<p>For startups, intellectual property often constitutes the core asset of the business...</p>',
+    slug: 'intellectual-property-startups',
+    imageUrl: '/images/blog/ip-rights.jpg',
+    authorId: '2',
+    createdAt: new Date('2025-05-10'),
+    updatedAt: new Date('2025-05-12'),
+    tags: ['Intellectual Property', 'Startups', 'Business Law']
+  }
+];
 
 export async function GET() {
   try {
-    const posts = await prisma.blogPost.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      },
-      include: {
-        tags: {
-          include: {
-            tag: true
-          }
-        }
-      }
-    });
-    
-    // Transform the data to simplify the structure for the frontend
-    const formattedPosts = posts.map((post: typeof posts[number]) => ({
-      id: post.id,
-      title: post.title,
-      excerpt: post.excerpt,
-      content: post.content,
-      slug: post.slug,
-      imageUrl: post.imageUrl,
-      authorId: post.authorId,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
-      tags: post.tags.map((tag: { tag: { name: string } }) => tag.tag.name)
-    }));
+    // Return static blog posts
+    const formattedPosts = staticBlogPosts;
     
     return NextResponse.json(formattedPosts);
   } catch (error) {
@@ -40,80 +43,12 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    // Parse the request body
-    const body = await request.json();
-    const { title, slug, content, excerpt, imageUrl, published, authorId, tags } = body;
-    
-    // Validate required fields
-    if (!title || !slug || !content) {
-      return NextResponse.json(
-        { error: 'Missing required fields' }, 
-        { status: 400 }
-      );
-    }
-    
-    // Check if slug already exists
-    const existingPost = await prisma.blogPost.findUnique({
-      where: { slug },
-    });
-    
-    if (existingPost) {
-      return NextResponse.json(
-        { error: 'Blog post with this slug already exists' },
-        { status: 409 }
-      );
-    }
-    
-    // Start a transaction to create the post and its tags
-    const newPost = await prisma.$transaction(async (prisma: typeof import('@prisma/client').PrismaClient) => {
-      // Create the blog post
-      const post = await prisma.blogPost.create({
-        data: {
-          title,
-          slug,
-          content,
-          excerpt,
-          imageUrl,
-          published: published || false,
-          authorId: authorId || null,
-        },
-      });
-      
-      // Create tag relations if tags are provided
-      if (tags && Array.isArray(tags) && tags.length > 0) {
-        // Process each tag
-        for (const tagName of tags) {
-          // Check if tag exists or create it
-          let tag = await prisma.tag.findUnique({
-            where: { name: tagName },
-          });
-          
-          if (!tag) {
-            tag = await prisma.tag.create({
-              data: { name: tagName }
-            });
-          }
-          
-          // Create relation between post and tag
-          await prisma.blogPostTag.create({
-            data: {
-              postId: post.id,
-              tagId: tag.id
-            }
-          });
-        }
-      }
-      
-      return post;
-    });
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Blog post created successfully',
-      post: newPost,
-    }, { status: 201 });
+    return NextResponse.json(
+      { error: 'Blog post creation is disabled' },
+      { status: 403 }
+    );
   } catch (error) {
     console.error('Error creating blog post:', error);
     return NextResponse.json(

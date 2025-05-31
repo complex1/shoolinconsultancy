@@ -1,5 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+
+// Static services data
+const staticServices = [
+  {
+    id: '1',
+    title: 'Corporate Law',
+    description: 'Comprehensive corporate legal services for businesses of all sizes.',
+    content: '<p>Our corporate law services cover all aspects of business operations, from formation to dissolution. We provide strategic advice on corporate governance, mergers and acquisitions, joint ventures, and regulatory compliance.</p><p>Our team of experienced corporate attorneys helps businesses navigate complex legal landscapes while minimizing risks and maximizing opportunities.</p>',
+    icon: 'corporate',
+    slug: 'corporate-law',
+    featured: true,
+    createdAt: new Date('2025-01-10'),
+    updatedAt: new Date('2025-04-15')
+  },
+  {
+    id: '2',
+    title: 'Intellectual Property',
+    description: 'Protection for your innovations, creative works, and brand identity.',
+    content: '<p>Our intellectual property practice helps clients protect their valuable IP assets. We handle patent applications, trademark registrations, copyright filings, and trade secret protection strategies.</p><p>We also provide enforcement services, including litigation for infringement cases and negotiation of licensing agreements.</p>',
+    icon: 'ip',
+    slug: 'intellectual-property',
+    featured: true,
+    createdAt: new Date('2025-01-15'),
+    updatedAt: new Date('2025-04-20')
+  },
+  {
+    id: '3',
+    title: 'Litigation',
+    description: 'Robust representation in court proceedings and dispute resolution.',
+    content: '<p>Our litigation team represents clients in a wide range of disputes across various forums. We handle civil litigation, commercial disputes, arbitration proceedings, and mediation services.</p><p>Our attorneys are known for their strategic approach, thorough preparation, and skilled advocacy in both trial and appellate courts.</p>',
+    icon: 'litigation',
+    slug: 'litigation',
+    featured: true,
+    createdAt: new Date('2025-01-20'),
+    updatedAt: new Date('2025-04-22')
+  }
+];
 
 export async function GET(
   request: NextRequest,
@@ -7,18 +43,9 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
+    const id = resolvedParams.id;
     
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid service ID' },
-        { status: 400 }
-      );
-    }
-    
-    const service = await prisma.service.findUnique({
-      where: { id },
-    });
+    const service = staticServices.find(service => service.id === id);
     
     if (!service) {
       return NextResponse.json(
@@ -37,127 +64,16 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid service ID' },
-        { status: 400 }
-      );
-    }
-    
-    // Parse the request body
-    const body = await request.json();
-    const { title, description, longDescription, iconUrl, slug, featured, originalSlug } = body;
-    
-    // Validate required fields
-    if (!title || !description || !longDescription || !iconUrl || !slug) {
-      return NextResponse.json(
-        { error: 'Missing required fields' }, 
-        { status: 400 }
-      );
-    }
-    
-    // Check if service exists
-    const service = await prisma.service.findUnique({
-      where: { id },
-    });
-    
-    if (!service) {
-      return NextResponse.json(
-        { error: 'Service not found' },
-        { status: 404 }
-      );
-    }
-    
-    // If slug has changed, check if new slug already exists
-    if (slug !== originalSlug) {
-      const existingService = await prisma.service.findUnique({
-        where: { slug },
-      });
-      
-      if (existingService && existingService.id !== id) {
-        return NextResponse.json(
-          { error: 'Service with this slug already exists' },
-          { status: 409 }
-        );
-      }
-    }
-    
-    // Update the service
-    const updatedService = await prisma.service.update({
-      where: { id },
-      data: {
-        title,
-        description,
-        longDescription,
-        iconUrl,
-        slug,
-        featured: featured || false,
-      },
-    });
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Service updated successfully',
-      service: updatedService,
-    });
-  } catch (error) {
-    console.error('Error updating service:', error);
-    return NextResponse.json(
-      { error: 'Failed to update service' },
-      { status: 500 }
-    );
-  }
+export async function PUT() {
+  return NextResponse.json(
+    { error: 'Service updates are disabled' },
+    { status: 403 }
+  );
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid service ID' },
-        { status: 400 }
-      );
-    }
-    
-    // Check if service exists
-    const service = await prisma.service.findUnique({
-      where: { id },
-    });
-    
-    if (!service) {
-      return NextResponse.json(
-        { error: 'Service not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Delete the service
-    await prisma.service.delete({
-      where: { id },
-    });
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Service deleted successfully',
-    });
-  } catch (error) {
-    console.error('Error deleting service:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete service' },
-      { status: 500 }
-    );
-  }
+export async function DELETE() {
+  return NextResponse.json(
+    { error: 'Service deletion is disabled' },
+    { status: 403 }
+  );
 }

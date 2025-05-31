@@ -1,0 +1,45 @@
+.card {
+  @include elevation(2);
+  background-color: map-get(map-get($colors, neutral), 100);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  
+  &--hover {
+    @include transition;
+    
+    &:hover {
+      @include elevation(3);
+      transform: translateY(-2px);
+    }
+  }
+  
+  &__header {
+    padding: map-get($spacing, 4);
+    border-bottom: 1px solid map-get(map-get($colors, neutral), 200);
+  }
+  
+  &__body {
+    padding: map-get($spacing, 4);
+  }
+  
+  &__footer {
+    padding: map-get($spacing, 4);
+    border-top: 1px solid map-get(map-get($colors, neutral), 200);
+    background-color: map-get(map-get($colors, neutral), 100);
+  }
+  
+  &__title {
+    font-size: map-get($font-sizes, xl);
+    font-weight: map-get($font-weights, bold);
+    color: map-get(map-get($colors, neutral), 900);
+  }
+  
+  &__subtitle {
+    font-size: map-get($font-sizes, base);
+    color: map-get(map-get($colors, neutral), 600);
+  }
+  
+  &--featured {
+    border: 2px solid map-get(map-get($colors, secondary), main);
+  }
+}

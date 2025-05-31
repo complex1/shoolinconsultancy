@@ -1,27 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import fs from 'fs/promises';
-import path from 'path';
 
-// GET a single media item by ID
+// Static media data
+const staticMedia = [
+  {
+    id: '1',
+    title: 'Company Logo',
+    description: 'Official logo of Shoolin Consultancy',
+    type: 'image',
+    url: '/uploads/media/logo.png',
+    filename: 'logo.png',
+    filetype: 'image/png',
+    size: 45678,
+    createdAt: new Date('2025-01-15'),
+    updatedAt: new Date('2025-01-15')
+  },
+  {
+    id: '2',
+    title: 'Office Brochure',
+    description: 'Corporate brochure with service details',
+    type: 'document',
+    url: '/uploads/media/brochure.pdf',
+    filename: 'brochure.pdf',
+    filetype: 'application/pdf',
+    size: 2345678,
+    createdAt: new Date('2025-02-10'),
+    updatedAt: new Date('2025-02-10')
+  },
+  {
+    id: '3',
+    title: 'Corporate Profile',
+    description: 'Company profile and team information',
+    type: 'image',
+    url: '/uploads/media/profile.jpg',
+    filename: 'profile.jpg',
+    filetype: 'image/jpeg',
+    size: 156789,
+    createdAt: new Date('2025-03-05'),
+    updatedAt: new Date('2025-03-05')
+  }
+];
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
+    const id = resolvedParams.id;
     
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid ID format' },
-        { status: 400 }
-      );
-    }
-    
-    const media = await prisma.media.findUnique({
-      where: { id }
-    });
+    // Find media with the matching ID
+    const media = staticMedia.find(media => media.id === id);
     
     if (!media) {
       return NextResponse.json(
@@ -30,7 +58,7 @@ export async function GET(
       );
     }
     
-    return NextResponse.json(media, { status: 200 });
+    return NextResponse.json(media);
   } catch (error) {
     console.error('Error fetching media:', error);
     return NextResponse.json(
@@ -40,93 +68,16 @@ export async function GET(
   }
 }
 
-// PATCH to update media metadata
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid ID format' },
-        { status: 400 }
-      );
-    }
-    
-    const json = await request.json();
-    const { title, description, altText } = json;
-    
-    // Only update metadata fields, not the file itself
-    const updatedMedia = await prisma.media.update({
-      where: { id },
-      data: {
-        title,
-        description,
-        altText,
-      }
-    });
-    
-    return NextResponse.json(updatedMedia, { status: 200 });
-  } catch (error) {
-    console.error('Error updating media:', error);
-    return NextResponse.json(
-      { error: 'Failed to update media' },
-      { status: 500 }
-    );
-  }
+export async function PUT() {
+  return NextResponse.json(
+    { error: 'Media updates are disabled' },
+    { status: 403 }
+  );
 }
 
-// DELETE a media item
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
-    
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid ID format' },
-        { status: 400 }
-      );
-    }
-    
-    // First get the media to know which file to delete
-    const media = await prisma.media.findUnique({
-      where: { id }
-    });
-    
-    if (!media) {
-      return NextResponse.json(
-        { error: 'Media not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Delete the file from the filesystem
-    try {
-      const filePath = path.join(process.cwd(), 'public', media.filepath);
-      await fs.unlink(filePath);
-    } catch (fileError) {
-      console.error('Warning: Could not delete file from filesystem:', fileError);
-      // Continue with deletion from database even if file deletion fails
-    }
-    
-    // Delete the record from the database
-    await prisma.media.delete({
-      where: { id }
-    });
-    
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error('Error deleting media:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete media' },
-      { status: 500 }
-    );
-  }
+export async function DELETE() {
+  return NextResponse.json(
+    { error: 'Media deletion is disabled' },
+    { status: 403 }
+  );
 }

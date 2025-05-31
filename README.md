@@ -78,25 +78,19 @@ public/              # Static assets
 prisma/              # Database schema and migrations
 ```
 
-## Database
+## Data Management
 
-This project uses SQLite with Prisma ORM for data management. The database file is located at `prisma/shoolin.db`.
+This project uses static data files for content management. The following data types are managed:
 
-### Schema
+- Blog articles with content, tags, and author relations
+- Team member profiles
+- Client testimonials
+- Company services
+- Contact form submissions (handled via API)
 
-The database schema is defined in `prisma/schema.prisma` and includes the following models:
+### Static Data
 
-- `AdminUser`: Admin users who can access the content management system
-- `BlogPost`: Blog articles with content, tags, and author relations
-- `Tag`: Tags for categorizing blog posts
-- `TeamMember`: Profiles of team members/attorneys
-- `Testimonial`: Client testimonials
-- `Service`: Company services
-- `ContactSubmission`: Form submissions from the contact page
-
-### Migrations
-
-Database migrations are managed through Prisma. To create a new migration after schema changes:
+Data is stored in static JSON objects within the API route handlers, making it easy to update content without requiring a database.
 
 ```bash
 npm run db:migrate

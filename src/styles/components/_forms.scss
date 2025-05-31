@@ -1,0 +1,52 @@
+.form {
+  &-group {
+    @include flex(column);
+    margin-bottom: map-get($spacing, 4);
+  }
+  
+  &-label {
+    font-size: map-get($font-sizes, sm);
+    font-weight: map-get($font-weights, medium);
+    color: map-get(map-get($colors, neutral), 700);
+    margin-bottom: map-get($spacing, 1);
+  }
+  
+  &-input {
+    padding: map-get($spacing, 2) map-get($spacing, 3);
+    border: 1px solid map-get(map-get($colors, neutral), 300);
+    border-radius: 0.25rem;
+    font-size: map-get($font-sizes, base);
+    @include transition(border-color);
+    
+    &:focus {
+      outline: none;
+      border-color: map-get(map-get($colors, primary), main);
+      box-shadow: 0 0 0 2px rgba(map-get(map-get($colors, primary), main), 0.1);
+    }
+    
+    &--error {
+      border-color: map-get(map-get($colors, accent), error);
+    }
+  }
+  
+  &-error {
+    font-size: map-get($font-sizes, xs);
+    color: map-get(map-get($colors, accent), error);
+    margin-top: map-get($spacing, 1);
+  }
+  
+  &-select {
+    @extend .form-input;
+    padding-right: map-get($spacing, 8);
+    appearance: none;
+    background-image: url("data:image/svg+xml,...");
+    background-repeat: no-repeat;
+    background-position: right map-get($spacing, 3) center;
+  }
+  
+  &-textarea {
+    @extend .form-input;
+    min-height: 100px;
+    resize: vertical;
+  }
+}

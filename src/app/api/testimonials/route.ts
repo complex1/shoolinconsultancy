@@ -1,32 +1,52 @@
-// API route handler for testimonials
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+// Static testimonials data
+const staticTestimonials = [
+  {
+    id: '1',
+    name: 'Vikram Mehta',
+    company: 'TechSolutions India',
+    position: 'CEO',
+    quote: 'Shoolin Consultancy provided exceptional legal guidance for our company during our expansion phase. Their expertise in corporate law was invaluable.',
+    rating: 5,
+    imageUrl: '/testimonials/person1.svg',
+    featured: true,
+    order: 1,
+    createdAt: new Date('2025-01-15'),
+    updatedAt: new Date('2025-01-15')
+  },
+  {
+    id: '2',
+    name: 'Anjali Desai',
+    company: 'Global Innovations',
+    position: 'Director',
+    quote: "Working with Shoolin Consultancy on our intellectual property strategy has been a game-changer. Their team's knowledge and dedication is outstanding.",
+    rating: 5,
+    imageUrl: '/testimonials/person2.svg',
+    featured: true,
+    order: 2,
+    createdAt: new Date('2025-02-10'),
+    updatedAt: new Date('2025-02-10')
+  },
+  {
+    id: '3',
+    name: 'Rajeev Kumar',
+    company: 'Pinnacle Enterprises',
+    position: 'Managing Director',
+    quote: 'Their litigation team delivered exceptional results in a complex commercial dispute. Professional, thorough, and strategic in their approach.',
+    rating: 5,
+    imageUrl: '/testimonials/person3.svg',
+    featured: true,
+    order: 3,
+    createdAt: new Date('2025-03-05'),
+    updatedAt: new Date('2025-03-05')
+  }
+];
+
+export async function GET() {
   try {
-    // Get query parameters
-    const { searchParams } = new URL(req.url);
-    const limitParam = searchParams.get('limit');
-    const featuredOnly = searchParams.get('featured') === 'true';
-    
-    // Parse limit (default to 10 if not provided or invalid)
-    const limit = limitParam ? parseInt(limitParam, 10) || 10 : 10;
-
-    // Build query
-    const where = featuredOnly ? { featured: true } : {};
-
-    // Get testimonials from database
-    const testimonials = await prisma.testimonial.findMany({
-      where,
-      take: limit,
-      orderBy: [
-        { featured: 'desc' },
-        { createdAt: 'desc' },
-      ],
-    });
-
-    // Return the testimonials
-    return NextResponse.json(testimonials);
+    // Return static testimonials
+    return NextResponse.json(staticTestimonials);
   } catch (error) {
     console.error('Error fetching testimonials:', error);
     return NextResponse.json(
@@ -36,47 +56,9 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
-  try {
-    // This endpoint would typically be protected by authentication in a real app
-    // You would add middleware or check for an API key here
-    
-    // Parse the request body
-    const body = await req.json();
-    const { name, position, company, content, rating, imageUrl, featured } = body;
-    
-    // Validate required fields
-    if (!name || !position || !company || !content) {
-      return NextResponse.json(
-        { error: 'Missing required fields' }, 
-        { status: 400 }
-      );
-    }
-
-    // Store testimonial in the database
-    const testimonial = await prisma.testimonial.create({
-      data: {
-        name,
-        position,
-        company,
-        content,
-        rating: rating || 5,
-        imageUrl,
-        featured: featured || false,
-      },
-    });
-
-    // Return success response
-    return NextResponse.json({
-      success: true,
-      message: 'Testimonial created successfully',
-      id: testimonial.id,
-    });
-  } catch (error) {
-    console.error('Error creating testimonial:', error);
-    return NextResponse.json(
-      { error: 'Failed to create testimonial' },
-      { status: 500 }
-    );
-  }
+export async function POST() {
+  return NextResponse.json(
+    { error: 'Testimonial creation is disabled' },
+    { status: 403 }
+  );
 }

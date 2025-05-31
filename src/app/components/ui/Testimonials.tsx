@@ -1,193 +1,238 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+    faLinkedin, 
+    faGoogle
+} from '@fortawesome/free-brands-svg-icons';
+import { 
+    faStar, 
+    faAward, 
+    faCertificate, 
+    faCheckCircle 
+} from '@fortawesome/free-solid-svg-icons';
 
-// Define the Testimonial type
-type Testimonial = {
-  id: number;
-  name: string;
-  position: string;
-  company: string;
-  content: string;
-  imageUrl: string | null;
-  rating: number;
-};
+const testimonials = [
+    {
+        name: 'Rajesh Kumar',
+        position: 'CEO, Tech Innovations Ltd',
+        avatar: '/testimonials/person1.svg',
+        text: 'Exceptional legal guidance in our company&apos;s expansion. Their corporate law expertise was invaluable during our Series B funding.',
+        platform: 'LinkedIn',
+        rating: 5,
+        icon: faLinkedin,
+        iconColor: '#0A66C2'
+    },
+    {
+        name: 'Priya Mehta',
+        position: 'Real Estate Developer',
+        avatar: '/testimonials/person2.svg',
+        text: 'Their property law team helped us navigate complex RERA regulations. Highly professional and thorough approach.',
+        platform: 'Google',
+        rating: 5,
+        icon: faGoogle,
+        iconColor: '#4285F4'
+    },
+    {
+        name: 'Amit Shah',
+        position: 'Startup Founder',
+        avatar: '/testimonials/person3.svg',
+        text: 'Outstanding IP protection services. They helped secure our patents and trademarks across multiple jurisdictions.',
+        platform: 'Trustpilot',
+        rating: 5,
+        icon: faCheckCircle,
+        iconColor: '#00B67A'
+    },
+    {
+        name: 'Sarah Johnson',
+        position: 'International Trade Consultant',
+        avatar: '/testimonials/person1.svg',
+        text: 'Their expertise in international business law is remarkable. Made our market entry into India smooth and compliant.',
+        platform: 'Chambers',
+        rating: 5,
+        icon: faAward,
+        iconColor: '#C5B358'
+    },
+    {
+        name: 'Vikram Singhania',
+        position: 'Director of Operations',
+        avatar: '/testimonials/person2.svg',
+        text: 'Exceptional service in handling our labor law compliance. Their team&apos;s attention to detail is commendable.',
+        platform: 'Legal500',
+        rating: 5,
+        icon: faCertificate,
+        iconColor: '#C5B358'
+    },
+    {
+        name: 'Anita Desai',
+        position: 'Finance Director',
+        avatar: '/testimonials/person3.svg',
+        text: 'Their tax advisory services helped us optimize our structure while maintaining full compliance. Highly recommended!',
+        platform: 'Google',
+        rating: 5,
+        icon: faGoogle,
+        iconColor: '#4285F4'
+    }
+];
 
 const Testimonials = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Fetch testimonials from API
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/testimonials?featured=true');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch testimonials');
-        }
-        
-        const data = await response.json();
-        setTestimonials(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching testimonials:', err);
-        setError('Unable to load testimonials. Please try again later.');
-        // Use fallback data if API fails
-        setTestimonials([
-          {
-            id: 1,
-            name: "Sarah Johnson",
-            position: "CEO",
-            company: "TechVision Inc.",
-            content: "Shoolin Consultancy transformed our business operations. Their strategic insights led to a 30% increase in productivity across our teams.",
-            imageUrl: "/testimonials/person1.svg",
-            rating: 5
-          },
-          {
-            id: 2,
-            name: "Michael Chen",
-            position: "CFO",
-            company: "Global Enterprises",
-            content: "Working with Shoolin Consultancy has been a game-changer. Their financial advisory services helped us navigate a challenging market and increase our revenue by 25%.",
-            imageUrl: "/testimonials/person2.svg",
-            rating: 5
-          }
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchTestimonials();
-  }, []);
-
-  const nextTestimonial = () => {
-    if (testimonials.length <= 1) return;
-    setActiveIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  };
-
-  const prevTestimonial = () => {
-    if (testimonials.length <= 1) return;
-    setActiveIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);
-  };
-
-  return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl font-bold text-blue-800 mb-4">Client Testimonials</h2>
-          <p className="text-gray-600 text-lg">
-            Read what our clients say about our consulting services and the results we&apos;ve delivered.
-          </p>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          {loading ? (
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-md flex items-center justify-center">
-              <div className="flex flex-col items-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-800 mb-4"></div>
-                <p className="text-gray-600">Loading testimonials...</p>
-              </div>
+    return (
+        <section className="py-24 bg-gradient-to-b from-white to-neutral-50 relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+                <Image
+                    src="/patterns/indian-pattern.svg"
+                    alt="Background Pattern"
+                    fill
+                    className="object-cover"
+                />
             </div>
-          ) : error ? (
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-md">
-              <p className="text-red-500 text-center">{error}</p>
-            </div>
-          ) : testimonials.length === 0 ? (
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-md">
-              <p className="text-gray-600 text-center">No testimonials available at the moment.</p>
-            </div>
-          ) : (
-            <>
-              <div className="bg-gray-50 rounded-2xl p-8 shadow-md">
-                <div className="flex flex-col items-center">
-                  <div className="mb-6">
-                    <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-100 shadow-md">
-                      <img 
-                        src={testimonials[activeIndex]?.imageUrl || '/testimonials/person1.svg'} 
-                        alt={`${testimonials[activeIndex]?.name} portrait`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
-                    <p className="text-gray-700 text-lg italic mb-6">&ldquo;{testimonials[activeIndex]?.content}&rdquo;</p>
-                    <h4 className="font-bold text-blue-800">{testimonials[activeIndex]?.name}</h4>
-                    <p className="text-gray-600">{testimonials[activeIndex]?.position}, {testimonials[activeIndex]?.company}</p>
-                  </div>
 
-                  <div className="flex space-x-4 mt-8">
-                    <button 
-                      onClick={prevTestimonial}
-                      className={`rounded-full w-10 h-10 ${testimonials.length > 1 ? 'bg-gray-200 hover:bg-blue-100' : 'bg-gray-100 cursor-not-allowed'} flex items-center justify-center transition-colors`}
-                      aria-label="Previous testimonial"
-                      disabled={testimonials.length <= 1}
+            <div className="container mx-auto px-4 relative z-10">
+                {/* Section Header */}
+                <div className="text-center mb-16">
+                    <motion.span
+                        className="text-gold-400 font-medium block mb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-5 w-5 ${testimonials.length > 1 ? 'text-blue-800' : 'text-gray-400'}`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={nextTestimonial}
-                      className={`rounded-full w-10 h-10 ${testimonials.length > 1 ? 'bg-gray-200 hover:bg-blue-100' : 'bg-gray-100 cursor-not-allowed'} flex items-center justify-center transition-colors`}
-                      aria-label="Next testimonial"
-                      disabled={testimonials.length <= 1}
+                        Client Insights
+                    </motion.span>
+                    <motion.h2
+                        className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-black-700 via-gold-400 to-black-600 bg-clip-text text-transparent"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-5 w-5 ${testimonials.length > 1 ? 'text-blue-800' : 'text-gray-400'}`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                        Voices of Success
+                    </motion.h2>
+                    <motion.p
+                        className="text-neutral-600 max-w-2xl mx-auto"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        Real experiences from our clients across different platforms, sharing their journey with our legal expertise
+                    </motion.p>
                 </div>
-              </div>
 
-              {testimonials.length > 1 && (
-                <div className="flex justify-center mt-6">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setActiveIndex(index)}
-                      className={`w-3 h-3 mx-1 rounded-full transition-colors ${
-                        index === activeIndex ? 'bg-blue-800' : 'bg-gray-300'
-                      }`}
-                      aria-label={`Go to testimonial ${index + 1}`}
-                    />
-                  ))}
+                {/* Testimonials Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                    {testimonials.map((testimonial, index) => (
+                        <motion.div
+                            key={index}
+                            className="group relative"
+                            initial={{ opacity: 0, y: 20, rotate: -2 }}
+                            whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.1 }}
+                        >
+                            {/* Sticky Note Effect */}
+                            <div className="relative transform transition-transform duration-300 group-hover:rotate-2 group-hover:-translate-y-2">
+                                {/* Shadow Effect */}
+                                <div className="absolute -inset-2 bg-black/5 rounded-[6px] transform rotate-3 group-hover:rotate-6 transition-transform duration-300" />
+                                
+                                {/* Card Content */}
+                                <div className="relative bg-white rounded-[6px] p-6 shadow-lg">
+                                    {/* Platform Badge */}
+                                    <div 
+                                        className="absolute -top-3 -right-3 w-8 h-8 rounded-full shadow-lg transform group-hover:scale-110 transition-all duration-300 flex items-center justify-center"
+                                        style={{ 
+                                            backgroundColor: testimonial.iconColor,
+                                            color: 'white'
+                                        }}
+                                    >
+                                        <FontAwesomeIcon 
+                                            icon={testimonial.icon} 
+                                            className="w-4 h-4"
+                                        />
+                                    </div>
+
+                                    {/* Quote */}
+                                    <div className="mb-6 relative">
+                                        <div className="absolute -top-2 -left-2 text-4xl text-gold-400 opacity-20">"</div>
+                                        <p className="text-neutral-600 relative z-10 italic">
+                                            {testimonial.text}
+                                        </p>
+                                        <div className="absolute -bottom-4 -right-2 text-4xl text-gold-400 opacity-20">"</div>
+                                    </div>
+
+                                    {/* Author Info */}
+                                    <div className="flex items-center space-x-4">
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold-400/20">
+                                            <Image
+                                                src={testimonial.avatar}
+                                                alt={testimonial.name}
+                                                width={48}
+                                                height={48}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-black-700 font-semibold">
+                                                {testimonial.name}
+                                            </h4>
+                                            <p className="text-sm text-neutral-500">
+                                                {testimonial.position}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Rating */}
+                                    <div className="absolute bottom-4 right-4 flex text-gold-400">
+                                        {[...Array(testimonial.rating)].map((_, i) => (
+                                            <FontAwesomeIcon 
+                                                key={i} 
+                                                icon={faStar} 
+                                                className="w-4 h-4"
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </section>
-  );
+
+                {/* Call to Action */}
+                <motion.div
+                    className="text-center mt-16"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
+                    <Link
+                        href="/testimonials"
+                        className="inline-flex items-center px-8 py-3 bg-black-700 text-white font-semibold rounded-[6px] hover:bg-black-600 transition-colors duration-300"
+                    >
+                        View All Client Stories
+                        <svg
+                            className="ml-2 w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                            />
+                        </svg>
+                    </Link>
+                </motion.div>
+            </div>
+
+            {/* Decorative Elements */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-black-700/5 rounded-full" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold-400/5 rounded-full" />
+        </section>
+    );
 };
 
 export default Testimonials;
