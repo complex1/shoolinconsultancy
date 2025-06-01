@@ -4,21 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FadeInView, StaggerParent } from './Animations';
-
-// Define the Service type
-type Service = {
-  id: number;
-  title: string;
-  description: string;
-  longDescription: string;
-  iconUrl: string;
-  slug: string;
-  featured: boolean;
-};
+import { FadeInView } from './Animations';
+import ServiceEntity from '@/entities/services.entities';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ServicesSection = () => {
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<ServiceEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,14 +19,14 @@ const ServicesSection = () => {
     const fetchServices = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/services?featured=true');
+        const response = await fetch('/api/admin/services?featured=true');
         
         if (!response.ok) {
           throw new Error('Failed to fetch services');
         }
         
         const data = await response.json();
-        setServices(data);
+        setServices(data.data || []);
         setError(null);
       } catch (err) {
         console.error('Error fetching services:', err);
@@ -97,13 +89,13 @@ const ServicesSection = () => {
               >
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full bg-gold-400/10 flex items-center justify-center mr-4">
-                    <Image
+                    {service.iconUrl ? <Image
                       src={service.iconUrl}
                       alt={service.title}
                       width={24}
                       height={24}
                       className="text-gold-400"
-                    />
+                    /> : <FontAwesomeIcon icon={faStar} className="text-gold-400" />}
                   </div>
                   <h3 className="text-xl font-semibold text-gold-400">{service.title}</h3>
                 </div>

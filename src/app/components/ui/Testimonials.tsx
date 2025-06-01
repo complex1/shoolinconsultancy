@@ -4,81 +4,63 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faLinkedin, 
+import {
+    faLinkedin,
     faGoogle
 } from '@fortawesome/free-brands-svg-icons';
-import { 
-    faStar, 
-    faAward, 
-    faCertificate, 
-    faCheckCircle 
+import {
+    faStar,
+    faAward,
+    faCertificate,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
+import TestimonialEntity from '@/entities/testimonials.entities';
 
-const testimonials = [
-    {
-        name: 'Rajesh Kumar',
-        position: 'CEO, Tech Innovations Ltd',
-        avatar: '/testimonials/person1.svg',
-        text: 'Exceptional legal guidance in our company&apos;s expansion. Their corporate law expertise was invaluable during our Series B funding.',
-        platform: 'LinkedIn',
-        rating: 5,
-        icon: faLinkedin,
-        iconColor: '#0A66C2'
-    },
-    {
-        name: 'Priya Mehta',
-        position: 'Real Estate Developer',
-        avatar: '/testimonials/person2.svg',
-        text: 'Their property law team helped us navigate complex RERA regulations. Highly professional and thorough approach.',
-        platform: 'Google',
-        rating: 5,
-        icon: faGoogle,
-        iconColor: '#4285F4'
-    },
-    {
-        name: 'Amit Shah',
-        position: 'Startup Founder',
-        avatar: '/testimonials/person3.svg',
-        text: 'Outstanding IP protection services. They helped secure our patents and trademarks across multiple jurisdictions.',
-        platform: 'Trustpilot',
-        rating: 5,
-        icon: faCheckCircle,
-        iconColor: '#00B67A'
-    },
-    {
-        name: 'Sarah Johnson',
-        position: 'International Trade Consultant',
-        avatar: '/testimonials/person1.svg',
-        text: 'Their expertise in international business law is remarkable. Made our market entry into India smooth and compliant.',
-        platform: 'Chambers',
-        rating: 5,
-        icon: faAward,
-        iconColor: '#C5B358'
-    },
-    {
-        name: 'Vikram Singhania',
-        position: 'Director of Operations',
-        avatar: '/testimonials/person2.svg',
-        text: 'Exceptional service in handling our labor law compliance. Their team&apos;s attention to detail is commendable.',
-        platform: 'Legal500',
-        rating: 5,
-        icon: faCertificate,
-        iconColor: '#C5B358'
-    },
-    {
-        name: 'Anita Desai',
-        position: 'Finance Director',
-        avatar: '/testimonials/person3.svg',
-        text: 'Their tax advisory services helped us optimize our structure while maintaining full compliance. Highly recommended!',
-        platform: 'Google',
-        rating: 5,
-        icon: faGoogle,
-        iconColor: '#4285F4'
-    }
-];
+const icons = {
+    LinkedIn: faLinkedin,
+    Google: faGoogle,
+    Trustpilot: faCheckCircle,
+    Chambers: faAward,
+    Legal500: faCertificate
+}
+
+const colorMap: Record<string, string> = {
+    LinkedIn: '#0077B5',
+    Google: '#4285F4',
+    Trustpilot: '#00B67A',
+    Chambers: '#FF9800',
+    Legal500: '#E91E63'
+};
 
 const Testimonials = () => {
+    const [testimonials, setTestimonials] = useState<TestimonialEntity[]>([])
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate fetching testimonials from an API
+        const fetchTestimonials = async () => {
+            try {
+                // Replace with actual API call
+                const response = await fetch('/api/admin/testimonials');
+                const data = await response.json();
+                setTestimonials(data.data || []);
+            } catch (error) {
+                console.error('Error fetching testimonials:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTestimonials();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    if (!testimonials || testimonials.length === 0) {
+        return <div>No testimonials available.</div>;
+    }
     return (
         <section className="py-24 bg-gradient-to-b from-white to-neutral-50 relative overflow-hidden">
             {/* Background Pattern */}
@@ -136,19 +118,19 @@ const Testimonials = () => {
                             <div className="relative transform transition-transform duration-300 group-hover:rotate-2 group-hover:-translate-y-2">
                                 {/* Shadow Effect */}
                                 <div className="absolute -inset-2 bg-black/5 rounded-[6px] transform rotate-3 group-hover:rotate-6 transition-transform duration-300" />
-                                
+
                                 {/* Card Content */}
                                 <div className="relative bg-white rounded-[6px] p-6 shadow-lg">
                                     {/* Platform Badge */}
-                                    <div 
+                                    <div
                                         className="absolute -top-3 -right-3 w-8 h-8 rounded-full shadow-lg transform group-hover:scale-110 transition-all duration-300 flex items-center justify-center"
-                                        style={{ 
-                                            backgroundColor: testimonial.iconColor,
+                                        style={{
+                                            backgroundColor: colorMap[testimonial.platform as keyof typeof colorMap] || 'green',
                                             color: 'white'
                                         }}
                                     >
-                                        <FontAwesomeIcon 
-                                            icon={testimonial.icon} 
+                                        <FontAwesomeIcon
+                                            icon={icons[testimonial.platform as keyof typeof icons] || faCheckCircle}
                                             className="w-4 h-4"
                                         />
                                     </div>
@@ -165,13 +147,21 @@ const Testimonials = () => {
                                     {/* Author Info */}
                                     <div className="flex items-center space-x-4">
                                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gold-400/20">
-                                            <Image
-                                                src={testimonial.avatar}
+                                            {(testimonial.avatar as string)?.length > 0 ? <Image
+                                                src={testimonial.avatar as string}
                                                 alt={testimonial.name}
                                                 width={48}
                                                 height={48}
                                                 className="w-full h-full object-cover"
-                                            />
+                                            /> : (
+                                                <div
+                                                    v-else
+                                                    className="w-full h-full flex items-center justify-center bg-gold-400/10 text-gold-400 font-semibold"
+                                                    style={{ fontSize: '1.5rem' }}
+                                                >
+                                                    {testimonial.name.charAt(0).toUpperCase()}
+                                                </div>
+                                            )}
                                         </div>
                                         <div>
                                             <h4 className="text-black-700 font-semibold">
@@ -186,9 +176,9 @@ const Testimonials = () => {
                                     {/* Rating */}
                                     <div className="absolute bottom-4 right-4 flex text-gold-400">
                                         {[...Array(testimonial.rating)].map((_, i) => (
-                                            <FontAwesomeIcon 
-                                                key={i} 
-                                                icon={faStar} 
+                                            <FontAwesomeIcon
+                                                key={i}
+                                                icon={faStar}
                                                 className="w-4 h-4"
                                             />
                                         ))}

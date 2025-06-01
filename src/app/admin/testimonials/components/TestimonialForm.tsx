@@ -10,6 +10,24 @@ interface TestimonialFormProps {
   onSubmit: (testimonialData: Partial<TestimonialEntity>) => Promise<void>;
 }
 
+const categories = [
+  'All',
+  'Corporate Law',
+  'Real Estate',
+  'IP Law',
+  'Tax Advisory',
+  'Employment Law',
+  'International Trade'
+];
+
+const platforms = [
+  'LinkedIn',
+  'Google',
+  'Trustpilot',
+  'Chambers',
+  'Legal500'
+];
+
 export default function TestimonialForm({
   testimonial,
   formMode,
@@ -147,82 +165,93 @@ export default function TestimonialForm({
               required
             />
           </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
-              Category <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="category"
-              name="category"
-              type="text"
-              value={currentTestimonial.category || ''}
-              onChange={handleInputChange}
-              placeholder="e.g., Corporate Law"
-              required
-            />
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="mb-4 md:mb-0 md:w-1/2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
+                Category <span className="text-red-500">*</span>
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="category"
+                name="category"
+                value={currentTestimonial.category || ''}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4 md:mb-0 md:w-1/2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="platform">
+                Platform
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="platform"
+                name="platform"
+                value={currentTestimonial.platform || ''}
+                onChange={handleInputChange}
+              >
+                <option value="">Select a platform</option>
+                {platforms.map((platform) => (
+                  <option key={platform} value={platform}>
+                    {platform}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="avatar">
-              Avatar URL
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="avatar"
-              name="avatar"
-              type="text"
-              value={currentTestimonial.avatar || ''}
-              onChange={handleInputChange}
-              placeholder="https://example.com/avatar.jpg"
-            />
-          </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="platform">
-              Platform
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="platform"
-              name="platform"
-              type="text"
-              value={currentTestimonial.platform || ''}
-              onChange={handleInputChange}
-              placeholder="e.g., LinkedIn, Google"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rating">
-              Rating (1-5)
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="rating"
-              name="rating"
-              type="number"
-              min="1"
-              max="5"
-              value={currentTestimonial.rating || 5}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="displayOrder">
-              Display Order
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="displayOrder"
-              name="displayOrder"
-              type="number"
-              min="0"
-              value={currentTestimonial.displayOrder || 0}
-              onChange={handleInputChange}
-            />
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="mb-4 md:mb-0 md:w-1/2">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="avatar">
+                Avatar URL
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="avatar"
+                name="avatar"
+                type="text"
+                value={currentTestimonial.avatar || ''}
+                onChange={handleInputChange}
+                placeholder="https://example.com/avatar.jpg"
+              />
+            </div>
+            <div className="mb-4 md:mb-0 md:w-1/4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rating">
+                Rating (1-5)
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="rating"
+                name="rating"
+                type="number"
+                min="1"
+                max="5"
+                value={currentTestimonial.rating || 5}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="mb-4 md:mb-0 md:w-1/4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="displayOrder">
+                Display Order
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="displayOrder"
+                name="displayOrder"
+                type="number"
+                min="0"
+                value={currentTestimonial.displayOrder || 0}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
 
           <div className="mb-4">

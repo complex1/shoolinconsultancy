@@ -193,31 +193,6 @@ export default function TestimonialsManagementPage() {
           </div>
         )}
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categoryFilter">
-            Filter by Category:
-          </label>
-          <div className="flex">
-            <select
-              id="categoryFilter"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
-            >
-              <option value="">All Categories</option>
-              {categories.map((category, index) => (
-                <option key={index} value={category}>{category}</option>
-              ))}
-            </select>
-            <button
-              onClick={fetchTestimonials}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded"
-            >
-              Refresh
-            </button>
-          </div>
-        </div>
-
         {testimonials.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 rounded">
             No testimonials found. Add your first testimonial!

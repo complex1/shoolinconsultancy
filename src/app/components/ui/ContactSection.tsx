@@ -74,21 +74,41 @@ const ContactSection = () => {
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [quote, setQuote] = useState<{quote: string; author: string} | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement actual form submission logic here
-        console.log('Form submitted:', formData);
+        setIsSubmitting(true);
+        setSubmitError(null);
         
-        // Select a random quote
-        const randomQuote = legalQuotes[Math.floor(Math.random() * legalQuotes.length)];
-        setQuote(randomQuote);
-        
-        // Set form as submitted
-        setIsSubmitted(true);
-        
-        // You would typically send the form data to your backend here
-        // For now we'll just simulate a successful submission
+        try {
+            // Send the form data to the API endpoint
+            const response = await fetch('/api/enquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to submit enquiry');
+            }
+            
+            // Select a random quote for success message
+            const randomQuote = legalQuotes[Math.floor(Math.random() * legalQuotes.length)];
+            setQuote(randomQuote);
+            
+            // Set form as submitted on success
+            setIsSubmitted(true);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setSubmitError(error instanceof Error ? error.message : 'Failed to submit enquiry. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -244,6 +264,17 @@ const ContactSection = () => {
                                             <p className="text-gold-600 text-sm mt-2">Fill out the form below for a personalized consultation</p>
                                         </div>
                                         
+                                        {submitError && (
+                                            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                                                <div className="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                                    </svg>
+                                                    {submitError}
+                                                </div>
+                                            </div>
+                                        )}
+                                        
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
                                                 <label htmlFor="name" className="block text-sm font-medium text-black-700 mb-1">
@@ -336,9 +367,18 @@ const ContactSection = () => {
                                         <div className="flex justify-center mt-8">
                                             <button
                                                 type="submit"
-                                                className="px-10 py-3 bg-gradient-to-r from-gold-600 to-gold-500 text-white font-semibold rounded-[6px] hover:from-gold-500 hover:to-gold-400 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
+                                                disabled={isSubmitting}
+                                                className={`px-10 py-3 bg-gradient-to-r from-gold-600 to-gold-500 text-white font-semibold rounded-[6px] hover:from-gold-500 hover:to-gold-400 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                                             >
-                                                Submit Inquiry
+                                                {isSubmitting ? (
+                                                    <span className="flex items-center">
+                                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                        Submitting...
+                                                    </span>
+                                                ) : "Submit Inquiry"}
                                             </button>
                                         </div>
                                     </form>
@@ -403,7 +443,7 @@ const ContactSection = () => {
                                                             viewBox="0 0 24 24"
                                                             xmlns="http://www.w3.org/2000/svg"
                                                         >
-                                                            <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z" />
+                                                            <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.492-.403.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z" />
                                                         </svg>
                                                     </div>
                                                     

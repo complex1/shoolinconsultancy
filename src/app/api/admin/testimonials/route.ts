@@ -18,17 +18,24 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const activeOnly = url.searchParams.get('activeOnly') === 'true';
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const limit = parseInt(url.searchParams.get('limit') || '10', 10);
+    const offset = (page - 1) * limit;
     
     // Prepare find options
     const findOptions: {
       order: { displayOrder: 'ASC' | 'DESC'; createdAt: 'ASC' | 'DESC' };
       where: Record<string, any>;
+      skip?: number;
+      take?: number;
     } = {
       order: {
         displayOrder: 'ASC',
         createdAt: 'DESC'
       },
-      where: {}
+      where: {},
+      skip: offset,
+      take: limit
     };
     
     // Apply filters if specified
@@ -40,15 +47,26 @@ export async function GET(request: NextRequest) {
       findOptions.where.isActive = true;
     }
     
-    // Execute query using simpler find method
+    // Get total count for pagination
+    const totalCount = await testimonialRepository.count({
+      where: findOptions.where
+    });
+    
+    // Execute query using pagination
     const testimonials = await testimonialRepository.find(findOptions);
     
-    console.log('Found testimonials:', testimonials.length);
+    console.log(`Found ${testimonials.length} testimonials out of ${totalCount} total`);
     
-    // Return the list of testimonials
+    // Return the paginated list of testimonials with metadata
     return NextResponse.json({
       success: true,
-      data: testimonials
+      data: testimonials,
+      meta: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit)
+      }
     }, { status: 200 });
   } catch (error) {
     console.error("Error fetching testimonials:", error);
