@@ -1,10 +1,17 @@
+// import { initDB } from "@/lib/sqlite";
 import type { NextConfig } from "next";
-const path = require('path');
+import path from 'path';
 
+// initDB().then(() => {
+//   console.log('Database initialized successfully');
+// }).catch(err => {
+//   console.error('Failed to initialize database:', err);
+// });
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone', // Enables standalone output for Docker deployments
 
+  // Add support for Prisma binary
   experimental: {
     // Add other experimental options here if needed
   },
