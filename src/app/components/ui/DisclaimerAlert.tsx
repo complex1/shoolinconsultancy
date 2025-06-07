@@ -11,10 +11,16 @@ const DisclaimerAlert = () => {
 
     useEffect(() => {
         // Show disclaimer every time the component mounts
+        // Check if the disclaimer has been accepted
+        const disclaimerAccepted = localStorage.getItem('disclaimerAccepted');
+        if (!disclaimerAccepted) {
+            // If not accepted, open the disclaimer dialog
         setIsOpen(true);
+        }
     }, []);
 
     const handleClose = () => {
+        localStorage.setItem('disclaimerAccepted', 'true');
         setIsOpen(false);
     };
 

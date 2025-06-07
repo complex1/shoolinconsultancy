@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faPhone, faEnvelope, faGlobe, faSearch, faArrowRight, faUser, faStar } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import ContactFormPopup from '../components/ui/ContactFormPopup';
+import NewsletterForm from '../components/ui/NewsletterForm';
 
 interface Office {
   id: number;
@@ -478,6 +479,78 @@ export default function Contact() {
                   </form>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-16 bg-gradient-to-br from-black-900 to-black-800 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div>
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="text-3xl md:text-4xl font-bold mb-4"
+                >
+                  Stay Informed With Legal Updates
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="text-gold-300 mb-6"
+                >
+                  Subscribe to our newsletter and receive the latest legal insights, industry updates, and firm news directly in your inbox.
+                </motion.p>
+                <motion.ul 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="space-y-3 mb-8"
+                >
+                  <li className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gold-500/20 flex items-center justify-center">
+                      <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3 text-gold-400" />
+                    </div>
+                    <span className="text-neutral-300">Exclusive insights from our legal experts</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gold-500/20 flex items-center justify-center">
+                      <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3 text-gold-400" />
+                    </div>
+                    <span className="text-neutral-300">Updates on latest regulations and legal changes</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-gold-500/20 flex items-center justify-center">
+                      <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3 text-gold-400" />
+                    </div>
+                    <span className="text-neutral-300">Invitations to exclusive webinars and events</span>
+                  </li>
+                </motion.ul>
+              </div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-white/5 backdrop-blur-sm p-8 rounded-xl border border-white/10 shadow-lg"
+              >
+                <h3 className="text-xl font-semibold mb-4 text-gold-300">Join Our Newsletter</h3>
+                <p className="text-neutral-300 mb-6">Enter your email below to subscribe to our newsletter. You can unsubscribe anytime.</p>
+                <NewsletterForm 
+                  darkMode={true}
+                  placeholder="Your email address"
+                  buttonText="Subscribe"
+                />
+                <p className="text-xs text-neutral-400 mt-4">By subscribing, you agree to our Privacy Policy and consent to receive updates from Shoolin Consultancy.</p>
+              </motion.div>
             </div>
           </div>
         </div>

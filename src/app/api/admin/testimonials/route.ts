@@ -1,18 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { AppDataSource, initDB } from "../../../../lib/sqlite";
+import { getRepository } from "../../../../lib/sqlite";
 import { TestimonialEntity } from "../../../../entities/testimonials.entities";
-
-// Helper function to ensure DB is initialized
-async function ensureDbInitialized() {
-  await initDB();
-  return AppDataSource.getRepository(TestimonialEntity);
-}
 
 // GET - Fetch all testimonials
 export async function GET(request: NextRequest) {
   try {
-    const testimonialRepository = await ensureDbInitialized();
+    console.log("GET /api/admin/testimonials - Initializing database connection");
+    const testimonialRepository = await getRepository<TestimonialEntity>(TestimonialEntity);
+    console.log("Database connection established successfully");
     
     // Get query parameters
     const url = new URL(request.url);
@@ -70,9 +66,20 @@ export async function GET(request: NextRequest) {
     }, { status: 200 });
   } catch (error) {
     console.error("Error fetching testimonials:", error);
+    
+    // Provide more specific error messages based on the error type
+    if (error instanceof Error && error.message.includes("Connection")) {
+      return NextResponse.json({
+        success: false,
+        message: "Database connection error. Please try again.",
+        error: error.message
+      }, { status: 503 }); // Service Unavailable
+    }
+    
     return NextResponse.json({
       success: false,
-      message: "Failed to fetch testimonials"
+      message: "Failed to fetch testimonials",
+      error: error instanceof Error ? error.message : "Unknown error"
     }, { status: 500 });
   }
 }
@@ -80,7 +87,7 @@ export async function GET(request: NextRequest) {
 // POST - Create a new testimonial
 export async function POST(request: NextRequest) {
   try {
-    const testimonialRepository = await ensureDbInitialized();
+    const testimonialRepository = await getRepository<TestimonialEntity>(TestimonialEntity);
     const testimonialData = await request.json();
     
     // Validate required fields
@@ -111,7 +118,7 @@ export async function POST(request: NextRequest) {
 // PUT - Update multiple testimonials (for batch operations like reordering)
 export async function PUT(request: NextRequest) {
   try {
-    const testimonialRepository = await ensureDbInitialized();
+    const testimonialRepository = await getRepository<TestimonialEntity>(TestimonialEntity);
     const updates = await request.json();
     
     // Validate input format
@@ -151,7 +158,7 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete multiple testimonials
 export async function DELETE(request: NextRequest) {
   try {
-    const testimonialRepository = await ensureDbInitialized();
+    const testimonialRepository = await getRepository<TestimonialEntity>(TestimonialEntity);
     const { ids } = await request.json();
     
     // Validate IDs array

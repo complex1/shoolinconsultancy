@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AppDataSource, initDB } from "../../../lib/sqlite";
+import { getRepository } from "../../../lib/sqlite";
 import { EnquiryEntity, createEnquiry } from "../../../entities/enquiry.entities";
-
-// Helper function to ensure DB is initialized
-async function ensureDbInitialized() {
-  await initDB();
-  return AppDataSource.getRepository(EnquiryEntity);
-}
 
 // POST - Submit a new enquiry from the public website
 export async function POST(request: NextRequest) {
   try {
-    const enquiryRepository = await ensureDbInitialized();
+    const enquiryRepository = await getRepository<EnquiryEntity>(EnquiryEntity);
     const formData = await request.json();
     
     // Validate required fields
@@ -49,6 +43,7 @@ export async function POST(request: NextRequest) {
       message: "Thank you for your enquiry. We'll get back to you soon."
     }, { status: 201 });
   } catch (error) {
+    console.error("Error creating enquiry:", error);
     console.error("Error submitting enquiry:", error);
     return NextResponse.json({
       success: false,

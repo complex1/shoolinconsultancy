@@ -19,6 +19,7 @@ import {
 import { useState } from 'react';
 import PolicyModal from '../ui/PolicyModal';
 import SitemapModal from '../ui/SitemapModal';
+import NewsletterForm from '../ui/NewsletterForm';
 import { privacyPolicyContent, termsOfServiceContent } from '../ui/policy-content';
 
 const practiceAreas = [
@@ -82,6 +83,17 @@ const Footer = () => {
                         <p className="text-neutral-300">
                             Providing expert legal solutions with integrity and excellence since 2010. Your trusted partner in navigating complex legal landscapes.
                         </p>
+                        
+                        {/* Newsletter Subscription */}
+                        {/* <div className="pt-4">
+                            <h4 className="text-white font-medium text-lg mb-3">Stay Updated</h4>
+                            <NewsletterForm 
+                                darkMode={true}
+                                placeholder="Your email address" 
+                                buttonText="Subscribe"
+                            />
+                        </div> */}
+                        
                         <div className="flex space-x-4">
                             {[
                                 { icon: faFacebookF, href: "#", color: "#1877F2" },
@@ -212,6 +224,28 @@ const Footer = () => {
                             </div>
                         </div>
                     </motion.div>
+                </div>
+
+                {/* Newsletter Section */}
+                <div className="bg-black-800 rounded-lg p-8 mb-16">
+                    <motion.h3
+                        className="text-white font-semibold text-2xl mb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        Subscribe to our Newsletter
+                    </motion.h3>
+                    <motion.p
+                        className="text-neutral-400 text-sm mb-6"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        Stay updated with the latest legal insights, news, and updates from our firm. Subscribe now and never miss an update.
+                    </motion.p>
+                    <NewsletterForm />
                 </div>
 
                 {/* Bottom Bar */}

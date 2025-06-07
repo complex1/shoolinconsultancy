@@ -1,19 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { AppDataSource, initDB } from "../../../../lib/sqlite";
+import { getRepository } from "../../../../lib/sqlite";
 import { BlogEntity } from "../../../../entities/blog.entity";
 import { ServiceEntity } from "../../../../entities/services.entities";
 import { TestimonialEntity } from "../../../../entities/testimonials.entities";
 import { EnquiryEntity } from "../../../../entities/enquiry.entities";
 import { AssetEntity } from "../../../../entities/assets.entity";
 import { UserEntity } from "../../../../entities/user.entities";
-
-// Helper function to ensure DB is initialized
-async function ensureDbInitialized() {
-  await initDB();
-  return AppDataSource;
-}
 
 // Helper function to get latest items from any entity
 async function getLatestItems<T>(repository: any, count: number = 5): Promise<T[]> {
@@ -33,14 +27,15 @@ async function countItems(repository: any, filter?: object): Promise<number> {
 // GET - Fetch dashboard overview data
 export async function GET(request: NextRequest) {
   try {
-    const dataSource = await ensureDbInitialized();
+    console.log("GET /api/admin/dashboard - Initializing database connections");
     
-    const blogRepository = dataSource.getRepository(BlogEntity);
-    const serviceRepository = dataSource.getRepository(ServiceEntity);
-    const testimonialRepository = dataSource.getRepository(TestimonialEntity);
-    const enquiryRepository = dataSource.getRepository(EnquiryEntity);
-    const assetRepository = dataSource.getRepository(AssetEntity);
-    const userRepository = dataSource.getRepository(UserEntity);
+    // Get repositories using the improved connection handling
+    const blogRepository = await getRepository<BlogEntity>(BlogEntity);
+    const serviceRepository = await getRepository<ServiceEntity>(ServiceEntity);
+    const testimonialRepository = await getRepository<TestimonialEntity>(TestimonialEntity);
+    const enquiryRepository = await getRepository<EnquiryEntity>(EnquiryEntity);
+    const assetRepository = await getRepository<AssetEntity>(AssetEntity);
+    const userRepository = await getRepository<UserEntity>(UserEntity);
 
     // Get counts of all entities
     const [

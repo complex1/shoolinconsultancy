@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faBookOpen, faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import NewsletterForm from '../components/ui/NewsletterForm';
 
 interface Author {
   id: number;
@@ -256,45 +257,13 @@ const ParallaxHero = () => {
 };
 
 const Sidebar = ({ tags, popularPosts }: { tags: string[], popularPosts: BlogPost[] }) => {
-  const [email, setEmail] = useState('');
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement newsletter subscription
-    console.log('Subscribe:', email);
-  };
-
   return (
     <div className="space-y-8">
-      {/* Newsletter Subscription */}
+      {/* Categories/Tags */}
       <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-6">
           <div className="w-1 h-6 bg-black-700"></div>
-          <h3 className="text-xl font-semibold text-neutral-800">Subscribe to Our Newsletter</h3>
-        </div>
-        <p className="text-neutral-600 mb-4">Stay updated with our latest legal insights and industry analysis.</p>
-        <form onSubmit={handleSubscribe} className="space-y-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="w-full px-4 py-3 border border-neutral-200 rounded-md focus:ring-2 focus:ring-black-700 focus:border-black-700"
-          />
-          <button
-            type="submit"
-            className="w-full bg-black-700 hover:bg-black-600 text-white px-4 py-3 rounded-md transition-colors duration-200 font-medium"
-          >
-            Subscribe
-          </button>
-        </form>
-      </div>
-
-      {/* Tag Cloud */}
-      <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-1 h-6 bg-gold-400"></div>
-          <h3 className="text-xl font-semibold text-neutral-800">Practice Areas</h3>
+          <h3 className="text-xl font-semibold text-neutral-800">Topics</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
@@ -306,6 +275,21 @@ const Sidebar = ({ tags, popularPosts }: { tags: string[], popularPosts: BlogPos
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Newsletter Subscription */}
+      <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1 h-6 bg-black-700"></div>
+          <h3 className="text-xl font-semibold text-neutral-800">Newsletter</h3>
+        </div>
+        <p className="text-neutral-600 mb-4">
+          Subscribe to our newsletter and stay updated with the latest legal insights and firm news.
+        </p>
+        <NewsletterForm 
+          placeholder="Your email address"
+          buttonText="Subscribe"
+        />
       </div>
 
       {/* Popular Posts */}

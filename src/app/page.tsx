@@ -1,6 +1,6 @@
 import Hero from './components/ui/Hero';
 import Stats from './components/ui/Stats';
-import PracticeAreas from './components/ui/PracticeAreas';
+// import PracticeAreas from './components/ui/PracticeAreas';
 import ServicesSection from './components/ui/ServicesSection';
 import GlobalPresence from './components/ui/GlobalPresence';
 import Testimonials from './components/ui/Testimonials';
@@ -12,7 +12,7 @@ export default function Home() {
     <main>
       <Hero />
       <Stats />
-      <PracticeAreas />
+      {/* <PracticeAreas /> */}
       <ServicesSection />
       <GlobalPresence />
       <Testimonials />

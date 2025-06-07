@@ -25,6 +25,13 @@ const Newsletter = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        await fetch('/api/public/newsletter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
         setStatus('Thank you for subscribing to our newsletter!');
         setEmail('');
     };

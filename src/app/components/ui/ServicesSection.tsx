@@ -1,13 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FadeInView } from './Animations';
 import ServiceEntity from '@/entities/services.entities';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ServiceCard from './ServiceCard';
 
 const ServicesSection = () => {
   const [services, setServices] = useState<ServiceEntity[]>([]);
@@ -20,11 +18,11 @@ const ServicesSection = () => {
       try {
         setLoading(true);
         const response = await fetch('/api/admin/services?featured=true');
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch services');
         }
-        
+
         const data = await response.json();
         setServices(data.data || []);
         setError(null);
@@ -35,22 +33,22 @@ const ServicesSection = () => {
         setLoading(false);
       }
     };
-    
+
     fetchServices();
   }, []);
 
   return (
     <section className="py-20 sm:py-24 bg-gradient-to-b from-maroon-900/5 to-transparent relative">
       {/* Background Pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.02]" 
+      <div
+        className="absolute inset-0 opacity-[0.02]"
         style={{
           backgroundImage: 'url(/patterns/indian-pattern.svg)',
           backgroundSize: '64px',
           backgroundRepeat: 'repeat'
         }}
       />
-      
+
       <div className="container mx-auto relative px-4 sm:px-6">
         <FadeInView>
           <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
@@ -62,7 +60,7 @@ const ServicesSection = () => {
             </h2>
             <div className="w-24 h-0.5 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 mx-auto mb-6" />
             <p className="text-gray-600 text-lg sm:text-xl leading-relaxed">
-              Our team of experienced attorneys provides comprehensive legal services, 
+              Our team of experienced attorneys provides comprehensive legal services,
               combining modern expertise with traditional values to serve justice.
             </p>
           </div>
@@ -70,7 +68,7 @@ const ServicesSection = () => {
 
         {loading ? (
           <div className="flex justify-center">
-            <motion.div 
+            <motion.div
               className="h-12 w-12 border-4 border-black-700 rounded-full border-t-transparent"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -83,32 +81,18 @@ const ServicesSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
-              <div
+              <ServiceCard
                 key={index}
-                className="p-6 rounded-lg bg-gradient-to-r from-black-700 to-black-600 border border-gold-400/20 transform transition-all duration-300 hover:scale-105"
-              >
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gold-400/10 flex items-center justify-center mr-4">
-                    {service.iconUrl ? <Image
-                      src={service.iconUrl}
-                      alt={service.title}
-                      width={24}
-                      height={24}
-                      className="text-gold-400"
-                    /> : <FontAwesomeIcon icon={faStar} className="text-gold-400" />}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gold-400">{service.title}</h3>
-                </div>
-                <p className="text-gray-300">{service.description}</p>
-              </div>
+                service={service}
+              />
             ))}
           </div>
         )}
 
         <FadeInView delay={0.2}>
           <div className="mt-16 text-center">
-            <Link 
-              href="/services" 
+            <Link
+              href="/services"
               className="inline-flex items-center justify-center px-8 py-3 border-2 border-black-700 
                          text-black-700 hover:text-white hover:bg-black-700 font-semibold rounded-lg 
                          transition-all duration-300 relative overflow-hidden group"
