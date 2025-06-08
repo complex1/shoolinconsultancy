@@ -21,6 +21,7 @@
     "@types/react-calendar": "^3.9.0",
     "better-sqlite3": "^11.10.0",
     "cookies-next": "^5.1.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.12.2",
     "next": "15.3.2",
     "react": "^19.0.0",

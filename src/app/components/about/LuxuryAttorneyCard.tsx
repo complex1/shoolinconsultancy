@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,7 +14,7 @@ import {
   faArrowRight,
   faCalendarCheck
 } from '@fortawesome/free-solid-svg-icons';
-import ConsultationPopover from './ConsultationPopover';
+import ConsultationPopover from '../ui/ConsultationPopover';
 
 interface Attorney {
   id?: number;
@@ -91,20 +90,18 @@ const LuxuryAttorneyCard: React.FC<LuxuryAttorneyCardProps> = ({
               </div>
               
               {image ? (
-                <Image
+                <img
                   src={image}
                   alt={name}
-                  fill
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               ) : (
                 <div className="w-full h-full bg-neutral-100 flex items-center justify-center">
                   <div className="relative w-36 h-36 rounded-full overflow-hidden border-2 border-neutral-200">
-                    <Image
+                    <img
                       src="/team/attorney1.svg"
                       alt={name}
-                      fill
                       className="object-cover"
                     />
                   </div>
@@ -164,13 +161,13 @@ const LuxuryAttorneyCard: React.FC<LuxuryAttorneyCardProps> = ({
               
               {/* Simplified action buttons */}
               <div className="mt-auto pt-3 flex flex-col space-y-2">
-                <button
+                {/* <button
                   onClick={handleScheduleClick}
                   className="w-full px-4 py-2.5 bg-black-700 hover:bg-black-600 text-white text-sm font-medium rounded-md transition-colors duration-300 flex items-center justify-center leading-relaxed"
                 >
                   <FontAwesomeIcon icon={faCalendarCheck} className="w-3.5 h-3.5 mr-2 flex-shrink-0" />
                   <span>Schedule Consultation</span>
-                </button>
+                </button> */}
                 <Link 
                   href={`/team/${attorney.id?.toString() || (name && name.toLowerCase().replace(/\s+/g, '-')) || 'profile'}`}
                   className="w-full px-4 py-2.5 bg-white border border-gold-400 text-black-700 text-sm font-medium rounded-md flex items-center justify-center transition-colors duration-300 hover:bg-gold-50 leading-relaxed"

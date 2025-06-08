@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTrash, faPencilAlt, faFileExport, faTimes, faCheck, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { CSVLink } from 'react-csv';
 import styles from './newsletter.module.css';
-import AdminLayout from '@/app/components/layout/AdminLayout';
+import AdminLayout from '../adminLayout';
 
 interface Newsletter {
   id: string;

@@ -1,33 +1,60 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faGavel, 
-  faHandcuffs, 
-  faScaleBalanced, 
-  faLaptopCode, 
-  faHome, 
-  faFileContract,
-  faShield,
-  faUserTie,
   faChevronLeft
 } from '@fortawesome/free-solid-svg-icons';
 import ConsultationPopover from '../../components/ui/ConsultationPopover';
-
-// Import the services data from the correct path
-import { legalServices, LegalService } from '../services-data';
 import { useParams } from 'next/navigation';
 
 export default function ServiceDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [service, setService] = useState<{
+    id: string;
+    title: string;
+    description: string;
+    icon: any; // IconDefinition from @fortawesome/react-fontawesome
+    longDescription: string;
+  } | null>(null);
   
   // Get params from useParams hook
   const params = useParams();
   const serviceId = params.id as string;
-  
-  const service = legalServices.find((s: LegalService) => s.id === serviceId);
+
+  // Fetch service details based on serviceId
+  useEffect(() => {
+    const fetchServiceDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/public/services/${serviceId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch service details');
+        }
+        const data = await response.json();
+        setService(data.data || null);
+      } catch (error) {
+        console.error('Error fetching service details:', error);
+        setService(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServiceDetails();
+  }, [serviceId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl text-black-700 mb-4">Loading...</h1>
+        </div>
+      </div>
+    );
+  }
 
   if (!service) {
     return (
@@ -59,10 +86,10 @@ export default function ServiceDetail() {
             Back to Services
           </Link>
           
-          <div className="max-w-4xl">
+          <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-6 mb-6">
               <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
-                <FontAwesomeIcon icon={service.icon} className="w-10 h-10 text-gold-200" />
+                <img src={service.icon} className="w-10 h-10 text-gold-200" />
               </div>
               <h1 className="text-4xl font-bold text-white">{service.title}</h1>
             </div>

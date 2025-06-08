@@ -1,18 +1,16 @@
-import Hero from './components/ui/Hero';
-import Stats from './components/ui/Stats';
-// import PracticeAreas from './components/ui/PracticeAreas';
-import ServicesSection from './components/ui/ServicesSection';
-import GlobalPresence from './components/ui/GlobalPresence';
-import Testimonials from './components/ui/Testimonials';
-import Newsletter from './components/ui/Newsletter';
-import ContactSection from './components/ui/ContactSection';
+import Hero from './components/homepage/Hero';
+import Stats from './components/homepage/Stats';
+import ServicesSection from './components/homepage/ServicesSection';
+import GlobalPresence from './components/homepage/GlobalPresence';
+import Testimonials from './components/homepage/Testimonials';
+import Newsletter from './components/homepage/Newsletter';
+import ContactSection from './components/homepage/ContactSection';
 
 export default function Home() {
   return (
     <main>
       <Hero />
       <Stats />
-      {/* <PracticeAreas /> */}
       <ServicesSection />
       <GlobalPresence />
       <Testimonials />

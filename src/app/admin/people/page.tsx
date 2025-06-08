@@ -254,7 +254,7 @@ export default function PeoplePage() {
                           <div className="flex items-center">
                             <div className="h-10 w-10 flex-shrink-0">
                               {user.image ? (
-                                <Image 
+                                <img 
                                   src={user.image} 
                                   alt={user.name} 
                                   width={40} 

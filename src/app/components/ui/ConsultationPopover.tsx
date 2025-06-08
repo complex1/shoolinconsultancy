@@ -3,14 +3,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faTimes, 
-  faCalendarAlt, 
-  faChevronLeft, 
+import {
+  faTimes,
+  faCalendarAlt,
+  faChevronLeft,
   faChevronRight,
   faUser,
-  faEnvelope,
-  faPhone,
   faCheck,
   faClock
 } from '@fortawesome/free-solid-svg-icons';
@@ -53,7 +51,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -65,25 +63,47 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
     if (!selectedDate || !selectedTime) {
       return;
     }
-    
-    // TODO: Implement form submission
-    console.log('Form submitted:', {
+    const formattedData = {
       ...formData,
-      selectedDate,
+      selectedDate: selectedDate.toISOString(),
       selectedTime,
-      attorney: attorney?.name
+      attorney: attorney?.name || ''
+    };
+    const response = await fetch('/api/public/consultation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formattedData)
     });
-    setCurrentStep(3);
+    const result = await response.json();
+
+    if (result.success) {
+      setCurrentStep(3);
+    }
+    else {
+      console.error('Error scheduling consultation:', result.message);
+    }
+    // setCurrentStep(3);
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+      agreeToTerms: false
+    });
   };
 
   // Close on ESC key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') resetForm();
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
+  }, []);
 
   // Prevent body scroll when popover is open
   useEffect(() => {
@@ -98,11 +118,25 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
   if (!isOpen) return null;
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     });
+  };
+
+  const resetForm = () => {
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+      agreeToTerms: false
+    });
+    setCurrentStep(1);
+    onClose();
   };
 
   return (
@@ -114,9 +148,9 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={resetForm}
           />
-          
+
           <motion.div
             className="fixed right-0 top-0 h-full w-full md:w-[500px] bg-white shadow-2xl z-50 overflow-y-auto"
             initial={{ x: '100%' }}
@@ -126,7 +160,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
           >
             <div className="p-6 relative min-h-full">
               <button
-                onClick={onClose}
+                onClick={resetForm}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
                 aria-label="Close popover"
               >
@@ -173,7 +207,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
                           tileDisabled={({ date }) => {
                             return date.getDay() === 0 || date.getDay() === 6;
                           }}
-                          navigationLabel={({ date }) => 
+                          navigationLabel={({ date }) =>
                             date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
                           }
                           prevLabel={<FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />}
@@ -318,7 +352,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
                       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
                         <FontAwesomeIcon icon={faCheck} className="w-8 h-8 text-green-600" />
                       </div>
-                      
+
                       <div className="space-y-2">
                         <p className="text-gray-900">
                           Thank you for scheduling a consultation{attorney ? ` with ${attorney.name}` : ''}.
@@ -336,7 +370,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
                       <div className="grid gap-2">
                         <p className="text-gray-600">
                           <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
-                          {selectedDate?.toLocaleDateString('en-US', { 
+                          {selectedDate?.toLocaleDateString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
                             month: 'long',
@@ -358,7 +392,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
 
                     <div className="fixed bottom-0 right-0 w-full md:w-[500px] p-4 bg-white border-t">
                       <button
-                        onClick={onClose}
+                        onClick={resetForm}
                         className="w-full bg-gray-100 text-gray-900 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors font-medium"
                       >
                         Close

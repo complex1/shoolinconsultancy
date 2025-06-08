@@ -9,6 +9,8 @@ import ServiceEntity from "@/entities/services.entities";
 import EnquiryEntity from "@/entities/enquiry.entities";
 import AssetEntity from "@/entities/assets.entity";
 import NewsletterEntity from "@/entities/newsletter.entities";
+import { GalleryMediaEntity } from "@/entities/galleryMedia.entities";
+import { ConsultationEntity } from "@/entities/consultation.entities";
 
 // Configure the database connection
 export const AppDataSource = new DataSource({
@@ -21,7 +23,9 @@ export const AppDataSource = new DataSource({
     ServiceEntity,
     EnquiryEntity,
     AssetEntity,
-    NewsletterEntity
+    NewsletterEntity,
+    GalleryMediaEntity,
+    ConsultationEntity
   ], // Include all entities
   synchronize: true, // Be careful with this in production
   logging: process.env.NODE_ENV === "development",

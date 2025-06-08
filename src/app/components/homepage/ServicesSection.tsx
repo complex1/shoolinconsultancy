@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FadeInView } from './Animations';
+import { FadeInView } from '../ui/Animations';
 import ServiceEntity from '@/entities/services.entities';
 import ServiceCard from './ServiceCard';
 

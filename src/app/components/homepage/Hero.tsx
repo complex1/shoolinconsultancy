@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FadeInView, StaggerParent } from './Animations';
-import MottoAnimation from './MottoAnimation';
-import ConsultationPopover from './ConsultationPopover';
-import DisclaimerAlert from './DisclaimerAlert';
-import ResponsiveImage from './ResponsiveImage';
+import { FadeInView, StaggerParent } from '../ui/Animations';
+import MottoAnimation from '../ui/MottoAnimation';
+import ConsultationPopover from '../ui/ConsultationPopover';
+import DisclaimerAlert from '../ui/DisclaimerAlert';
+import ResponsiveImage from '../ui/ResponsiveImage';
 import { colors, accessibleCombos } from '@/app/styles/colors';
-import RecognitionBadges from './RecognitionBadges';
+import RecognitionBadges from '../ui/RecognitionBadges';
 
 const Hero = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
