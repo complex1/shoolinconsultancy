@@ -83,17 +83,17 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
     }
     else {
       console.error('Error scheduling consultation:', result.message);
+      // Only reset the form if there's an error
+      setSelectedDate(null);
+      setSelectedTime(null);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+        agreeToTerms: false
+      });
     }
-    // setCurrentStep(3);
-    setSelectedDate(null);
-    setSelectedTime(null);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      message: '',
-      agreeToTerms: false
-    });
   };
 
   // Close on ESC key
@@ -307,7 +307,7 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
 
                       <div>
                         <label htmlFor="message" className="block text-sm font-medium text-gray-900">
-                          Message (Optional)
+                          Message
                         </label>
                         <textarea
                           id="message"
@@ -316,7 +316,8 @@ const ConsultationPopover: React.FC<ConsultationPopoverProps> = ({ isOpen, onClo
                           onChange={handleChange}
                           rows={3}
                           className="mt-1 block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        />
+                          required
+                        ></textarea>
                       </div>
 
                       <div className="flex items-center">
