@@ -18,11 +18,12 @@ async function getConsultationById(id: string) {
 // GET: Fetch a single consultation request
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const id = (await params).id;
   try {
-    const consultation = await getConsultationById(params.id);
-    
+    const consultation = await getConsultationById(id);
+
     if (!consultation) {
       return corsResponse({
         success: false,
@@ -35,7 +36,7 @@ export async function GET(
       data: consultation
     }, { status: 200 });
   } catch (error) {
-    console.error(`Error fetching consultation request with ID ${params.id}:`, error);
+    console.error(`Error fetching consultation request with ID ${id}:`, error);
     return corsResponse({
       success: false,
       message: "Failed to fetch consultation request"
@@ -46,12 +47,13 @@ export async function GET(
 // PATCH: Update a consultation request (status, notes, etc.)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const id = (await params).id;
   try {
     const consultationRepo = await ensureDbInitialized();
-    const consultation = await getConsultationById(params.id);
-    
+    const consultation = await getConsultationById(id);
+
     if (!consultation) {
       return corsResponse({
         success: false,
@@ -101,7 +103,7 @@ export async function PATCH(
       message: "Consultation request updated successfully"
     }, { status: 200 });
   } catch (error) {
-    console.error(`Error updating consultation request with ID ${params.id}:`, error);
+    console.error(`Error updating consultation request with ID ${id}:`, error);
     return corsResponse({
       success: false,
       message: "Failed to update consultation request"
@@ -112,12 +114,13 @@ export async function PATCH(
 // DELETE: Remove a consultation request
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const id = (await params).id;
   try {
     const consultationRepo = await ensureDbInitialized();
-    const consultation = await getConsultationById(params.id);
-    
+    const consultation = await getConsultationById(id);
+
     if (!consultation) {
       return corsResponse({
         success: false,
@@ -133,7 +136,7 @@ export async function DELETE(
       message: "Consultation request deleted successfully"
     }, { status: 200 });
   } catch (error) {
-    console.error(`Error deleting consultation request with ID ${params.id}:`, error);
+    console.error(`Error deleting consultation request with ID ${id}:`, error);
     return corsResponse({
       success: false,
       message: "Failed to delete consultation request"

@@ -11,12 +11,12 @@ async function ensureDbInitialized() {
 // GET - Fetch a single testimonial by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const testimonialRepository = await ensureDbInitialized();
-    const id = params.id;
-    
+    const id = (await params).id;
+
     // Find the testimonial
     const testimonial = await testimonialRepository.findOne({
       where: { id }
@@ -47,11 +47,11 @@ export async function GET(
 // PATCH - Update a single testimonial by ID
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const testimonialRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     const updateData = await request.json();
     
     // Find the testimonial
@@ -88,12 +88,12 @@ export async function PATCH(
 // DELETE - Delete a single testimonial by ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const testimonialRepository = await ensureDbInitialized();
-    const id = params.id;
-    
+    const id = (await params).id;
+
     // Find the testimonial
     const testimonial = await testimonialRepository.findOne({
       where: { id }

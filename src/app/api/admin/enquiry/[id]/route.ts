@@ -12,11 +12,11 @@ async function ensureDbInitialized() {
 // GET - Fetch a single enquiry by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const enquiryRepository = await ensureDbInitialized();
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     // Validate ID
     if (isNaN(id)) {
@@ -54,11 +54,11 @@ export async function GET(
 // PATCH - Update enquiry status or resolution
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const enquiryRepository = await ensureDbInitialized();
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     const updates = await request.json();
     
     // Validate ID
@@ -108,11 +108,11 @@ export async function PATCH(
 // DELETE - Delete an enquiry
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const id = parseInt((await params).id);
   try {
     const enquiryRepository = await ensureDbInitialized();
-    const id = parseInt(params.id);
     
     // Validate ID
     if (isNaN(id)) {

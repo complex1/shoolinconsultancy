@@ -11,11 +11,11 @@ async function ensureDbInitialized() {
 // GET - Fetch a single service by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const serviceRepository = await ensureDbInitialized();
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     // Validate ID
     if (isNaN(id)) {
@@ -54,11 +54,11 @@ export async function GET(
 // PATCH - Update specific fields of a service
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const serviceRepository = await ensureDbInitialized();
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     const updates = await request.json();
     
     // Validate ID
@@ -115,11 +115,11 @@ export async function PATCH(
 // DELETE - Delete a service by ID
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const serviceRepository = await ensureDbInitialized();
-    const id = parseInt(params.id);
+    const id = parseInt((await params).id);
     
     // Validate ID
     if (isNaN(id)) {

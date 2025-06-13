@@ -10,11 +10,11 @@ async function ensureDbInitialized() {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const blogRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     
     const blog = await blogRepository.findOne({ where: { id } });
     
@@ -40,11 +40,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const blogRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     const blogData = await request.json();
     
     // Check if blog exists
@@ -79,11 +79,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const blogRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     
     // Check if blog exists
     const existingBlog = await blogRepository.findOne({ where: { id } });

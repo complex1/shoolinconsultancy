@@ -21,10 +21,11 @@ async function getGalleryMediaById(id: string) {
 // GET: Fetch a single gallery media item
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const _params = await params;
   try {
-    const mediaItem = await getGalleryMediaById(params.id);
+    const mediaItem = await getGalleryMediaById(_params.id);
     
     if (!mediaItem) {
       return corsResponse({
@@ -38,7 +39,7 @@ export async function GET(
       data: mediaItem
     }, { status: 200 });
   } catch (error) {
-    console.error(`Error fetching gallery media item with ID ${params.id}:`, error);
+    console.error(`Error fetching gallery media item with ID ${_params.id}:`, error);
     return corsResponse({
       success: false,
       message: "Failed to fetch gallery media item"
@@ -49,12 +50,13 @@ export async function GET(
 // PATCH: Update a gallery media item
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const _params = await params;
   try {
     const mediaRepository = await ensureDbInitialized();
-    const mediaItem = await getGalleryMediaById(params.id);
-    
+    const mediaItem = await getGalleryMediaById(_params.id);
+
     if (!mediaItem) {
       return corsResponse({
         success: false,
@@ -82,7 +84,7 @@ export async function PATCH(
       message: "Gallery media item updated successfully"
     }, { status: 200 });
   } catch (error) {
-    console.error(`Error updating gallery media item with ID ${params.id}:`, error);
+    console.error(`Error updating gallery media item with ID ${_params.id}:`, error);
     return corsResponse({
       success: false,
       message: "Failed to update gallery media item"
@@ -93,12 +95,13 @@ export async function PATCH(
 // DELETE: Remove a gallery media item
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const _params = await params;
   try {
     const mediaRepository = await ensureDbInitialized();
-    const mediaItem = await getGalleryMediaById(params.id);
-    
+    const mediaItem = await getGalleryMediaById(_params.id);
+
     if (!mediaItem) {
       return corsResponse({
         success: false,
@@ -114,7 +117,7 @@ export async function DELETE(
       message: "Gallery media item deleted successfully"
     }, { status: 200 });
   } catch (error) {
-    console.error(`Error deleting gallery media item with ID ${params.id}:`, error);
+    console.error(`Error deleting gallery media item with ID ${_params.id}:`, error);
     return corsResponse({
       success: false,
       message: "Failed to delete gallery media item"

@@ -11,11 +11,11 @@ async function ensureDbInitialized() {
 // GET - Fetch a service by slug
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const serviceRepository = await ensureDbInitialized();
-    const { slug } = params;
+    const { slug } = await params;
     
     // Find the service by slug
     const service = await serviceRepository.findOne({

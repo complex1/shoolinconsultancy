@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { AppDataSource, initDB } from "../../../../../lib/sqlite";
 import { AssetEntity } from "../../../../../entities/assets.entity";
 import path from 'path';
@@ -11,12 +11,12 @@ async function ensureDbInitialized() {
 
 // GET - Fetch a single asset by ID
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<Promise<Promise<Promise<Promise<Promise<Promise<{ id: string }>>>>>>> }
 ) {
   try {
     const assetRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     
     // Find the asset
     const asset = await assetRepository.findOne({
@@ -45,12 +45,12 @@ export async function GET(
 
 // PATCH - Update asset metadata (name, alt text, etc.)
 export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const assetRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     const updates = await request.json();
     
     // Find the asset
@@ -89,12 +89,12 @@ export async function PATCH(
 
 // DELETE - Delete a single asset
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const assetRepository = await ensureDbInitialized();
-    const id = params.id;
+    const id = (await params).id;
     
     // Find the asset
     const asset = await assetRepository.findOne({
